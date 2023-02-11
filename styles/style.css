@@ -1,0 +1,8 @@
+.input_video {
+    display: none;
+}
+
+.output_canvas {
+    width: 100vw;
+    height: 100vw;
+}
