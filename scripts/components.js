@@ -1,5 +1,6 @@
 import { getAgilityData } from "./firebase.js";
-
+// X axis = 300
+// Y axis = 150
 const levels = [
     {
         level: 1,
