@@ -58,10 +58,7 @@ function onResults(results) {
                     element.img.src = element.path;
                     canvasCtx.drawImage(element.img, element.x, element.y, element.width, element.height);
 
-                    canvasCtx.beginPath();
-                    canvasCtx.arc(element.center.x, element.center.y, 5, 0, 2 * Math.PI);
-                    canvasCtx.fillStyle = "green";
-                    canvasCtx.fill();
+                    
                 }
             });
 
@@ -184,8 +181,8 @@ const camera = new Camera(videoElement, {
     onFrame: async () => {
         await hands.send({ image: videoElement });
     },
-    width: window.innerWidth,
-    height: window.innerWidth
+    width: document.body.getBoundingClientRect().width,
+    height: document.body.getBoundingClientRect().width
 });
 
 camera.start();
