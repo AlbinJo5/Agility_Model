@@ -1,3 +1,6 @@
+import { getImgeData } from "./ballSpwaning.js";
+
+
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvasCtx = canvasElement.getContext('2d');
@@ -7,39 +10,26 @@ const scoreElement2 = document.getElementById('score2');
 
 var hide = false;
 
-const imageData = [
-    {
-        img: new Image(),
-        x: 50,
-        y: 50,
-        width: 100,
-        height: 100,
-        path: "./assets/test.png",
-        center: { x: 100, y: 100 },
-        hide: false
-    },
+const imageData = getImgeData();
 
-    {
-        img: new Image(),
-        x: 150,
-        y: 50,
-        width: 100,
-        height: 100,
-        path: "./assets/test.png",
-        center: { x: 200, y: 100 },
-        hide: false
-    },
-    {
-        img: new Image(),
-        x: 10,
-        y: 10,
-        width: 100,
-        height: 100,
-        path: "./assets/test2.png",
-        center: { x: 60, y: 60 },
-        hide: false
-    },
-]
+// function to set time out
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+//funtion to set timer
+function setTimer() {
+    var time = 0;
+    var timer = setInterval(function () {
+        time++;
+        console.log(time);
+        if (time === 5) {
+            clearInterval(timer);
+            hide = true;
+            console.log("hide");
+        }
+    }, 1000);
+}
 
 function SurfaceArea(a, b, c) {
     // a={x:0,y:0,z:0}
@@ -62,8 +52,6 @@ function onResults(results) {
     // dran an image into the canvas with results.image
 
     try {
-
-
         if (results.multiHandLandmarks) {
             imageData.forEach(element => {
                 if (!element.hide) {
@@ -72,23 +60,12 @@ function onResults(results) {
 
                     canvasCtx.beginPath();
                     canvasCtx.arc(element.center.x, element.center.y, 5, 0, 2 * Math.PI);
-                    canvasCtx.fillStyle = "red";
+                    canvasCtx.fillStyle = "green";
                     canvasCtx.fill();
                 }
             });
 
 
-            // timeout to hide the image
-
-            for (const landmarks of results.multiHandLandmarks) {
-                // shade the area of the triangle
-                canvasCtx.beginPath();
-                canvasCtx.moveTo(landmarks[5].x * canvasElement.width, landmarks[5].y * canvasElement.height);
-                canvasCtx.lineTo(landmarks[0].x * canvasElement.width, landmarks[0].y * canvasElement.height);
-                canvasCtx.lineTo(landmarks[17].x * canvasElement.width, landmarks[17].y * canvasElement.height);
-                canvasCtx.fillStyle = "rgba(0, 255, 0, 0.5)";
-                canvasCtx.fill();
-            }
 
 
             imageData.forEach(element2 => {
@@ -169,10 +146,6 @@ function onResults(results) {
 
                 }
             });
-
-
-            console.log(results.multiHandLandmarks);
-
 
             // set the z coordinate of the [0] to the scoreElement
             scoreElement.innerHTML = SurfaceArea(results.multiHandLandmarks[0][0], results.multiHandLandmarks[0][5], results.multiHandLandmarks[0][17]);
