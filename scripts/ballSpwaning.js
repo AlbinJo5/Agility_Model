@@ -61,6 +61,7 @@ function randomNumber(min, max, count, array = []) {
                 i--;
             }
         }
+        return arr;
     }
     else {
 
@@ -93,6 +94,9 @@ export const getImgeData = () => {
 
     var greenBalls = randomNumber(0, 35, 5);
     var redBalls = randomNumber(0, 35, 3, greenBalls);
+
+    console.log(greenBalls);
+    console.log(redBalls);
 
     greenBalls.forEach(element => {
         imgData.push({
