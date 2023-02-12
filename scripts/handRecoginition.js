@@ -48,7 +48,8 @@ function onResults(results) {
 
     canvasCtx.drawImage(
         results.image, 0, 0, canvasElement.width, canvasElement.height);
-
+    // invert the image
+    canvasCtx.translate(canvasElement.width, 0);
     // dran an image into the canvas with results.image
 
     try {
@@ -58,7 +59,7 @@ function onResults(results) {
                     element.img.src = element.path;
                     canvasCtx.drawImage(element.img, element.x, element.y, element.width, element.height);
 
-                    
+
                 }
             });
 
