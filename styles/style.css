@@ -1,39 +1,36 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: black;
-    display: flex;
-    align-items: center;
-
+  background-color: black;
+  display: flex;
+  align-items: center;
 }
 
 h3 {
-    color: white;
-    font-size: 10vw;
-    letter-spacing: .5vw;
-    margin: 1vw;
+  color: white;
+  font-size: 10vw;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
 }
 
 h5 {
-    color: white;
-    font-size: 8vw;
-    letter-spacing: .5vw;
-    margin: 1vw;
+  color: white;
+  font-size: 8vw;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
 }
 
-
 .input_video {
-    display: none;
-
-
+  display: none;
 }
 
 .output_canvas {
-    width: 98vw;
-    height: 98vw;
-    border-radius: 1vw;
-    border: 1vw solid greenyellow;
+  width: 98vw;
+  height: 98vw;
+  border-radius: 1vw;
+  background-color: aquamarine;
+  border: 1vw solid greenyellow;
 }
