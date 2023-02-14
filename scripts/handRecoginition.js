@@ -42,6 +42,7 @@ function SurfaceArea(a, b, c) {
 }
 
 function onResults(results) {
+    console.log(canvasElement.width);
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
