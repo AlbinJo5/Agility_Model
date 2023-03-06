@@ -89,7 +89,7 @@ function randomNumber(min, max, count, array = []) {
 // },
 
 
-export const getImgeData = () => {
+function getImageData() {
     var imgData = [];
 
     var greenBalls = randomNumber(0, 35, 5);
