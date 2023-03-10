@@ -28,8 +28,8 @@ h5 {
 }
 
 .output_canvas {
-  width: 98vw;
-  height: 98vw;
+  width: 100vh;
+  height: 100vh;
   border-radius: 1vw;
   background-color: aquamarine;
   border: 1vw solid greenyellow;
