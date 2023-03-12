@@ -174,13 +174,19 @@ function onResults(results) {
   fpsControl.tick();
   // Draw the overlays.
   canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  canvasCtx.clearRect(
+    0,
+    0,
+
+    window.innerWidth,
+    window.innerHeight
+  );
   canvasCtx.drawImage(
     results.image,
     0,
     0,
-    canvasElement.width,
-    canvasElement.height
+    window.innerWidth,
+    window.innerHeight
   );
 
   if (results.multiHandLandmarks && results.multiHandedness) {
@@ -215,38 +221,32 @@ function onResults(results) {
   greenImg.src = "./assets/green.svg";
 
   output.redBalls.forEach((point) => {
-      canvasCtx.drawImage(redImg, point.x, point.y, 100, 100);
+    canvasCtx.drawImage(redImg, point.x, point.y, 100, 100);
 
-      // if the above drawn circle touches the red ball, then remove the red ball
-      if (results.multiHandLandmarks && results.multiHandedness) {
-        for (
-          let index = 0;
-          index < results.multiHandLandmarks.length;
-          index++
+    // if the above drawn circle touches the red ball, then remove the red ball
+    if (results.multiHandLandmarks && results.multiHandedness) {
+      for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+        const landmarks = results.multiHandLandmarks[index];
+        const middlePoint = {
+          x: (landmarks[9].x + landmarks[0].x) / 2,
+          y: (landmarks[9].y + landmarks[0].y) / 2,
+          z: (landmarks[9].z + landmarks[0].z) / 2,
+        };
+
+        // draw a point at the middle point
+
+        if (
+          Math.sqrt(
+            Math.pow(middlePoint.x * canvasElement.width - (point.x - 20), 2) +
+              Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
+          ) < 50
         ) {
-          const landmarks = results.multiHandLandmarks[index];
-          const middlePoint = {
-            x: (landmarks[9].x + landmarks[0].x) / 2,
-            y: (landmarks[9].y + landmarks[0].y) / 2,
-            z: (landmarks[9].z + landmarks[0].z) / 2,
-          };
+          decrementScore();
 
-          // draw a point at the middle point
-
-          if (
-            Math.sqrt(
-              Math.pow(
-                middlePoint.x * canvasElement.width - (point.x - 20),
-                2
-              ) + Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-            ) < 50
-          ) {
-            decrementScore();
-
-            output.redBalls.splice(output.redBalls.indexOf(point), 1);
-          }
+          output.redBalls.splice(output.redBalls.indexOf(point), 1);
         }
       }
+    }
   });
 
   output.greenBalls.forEach((point) => {
