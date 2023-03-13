@@ -12,6 +12,7 @@ var seconds = 60;
 var score = 1000;
 var el = document.getElementById("seconds-counter");
 var sc = document.getElementById("score");
+sc.innerText = 2000;
 
 function decrementScore() {
   if (score >= 0) {
@@ -58,9 +59,9 @@ if (window.innerWidth > window.innerHeight) {
 }
 
 var level = 1;
-var numberOfPoints = 11;
-var numberofGreenBalls = 5;
-var numberofRedBalls = 6;
+var numberOfPoints = 6;
+var numberofGreenBalls = 8;
+var numberofRedBalls = 5;
 var output = {
   greenBalls: [],
   redBalls: [],
@@ -165,6 +166,7 @@ const fpsControl = new controls.FPS();
 // Optimization: Turn off animated spinner after its hiding animation is done.
 const spinner = document.querySelector(".loading");
 spinner.ontransitionend = () => {
+  console.log("spinner transition end");
   spinner.style.display = "none";
 };
 function onResults(results) {
@@ -174,19 +176,13 @@ function onResults(results) {
   fpsControl.tick();
   // Draw the overlays.
   canvasCtx.save();
-  canvasCtx.clearRect(
-    0,
-    0,
-
-    window.innerWidth,
-    window.innerHeight
-  );
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(
     results.image,
     0,
     0,
-    window.innerWidth,
-    window.innerHeight
+    canvasElement.width,
+    canvasElement.height
   );
 
   if (results.multiHandLandmarks && results.multiHandedness) {
@@ -199,7 +195,6 @@ function onResults(results) {
         z: (landmarks[9].z + landmarks[0].z) / 2,
       };
       // draw a circle at the middle point
-
       canvasCtx.beginPath();
       canvasCtx.arc(
         middlePoint.x * canvasElement.width,
@@ -208,7 +203,7 @@ function onResults(results) {
         0,
         2 * Math.PI
       );
-      canvasCtx.fillStyle = "#49a6f4";
+      canvasCtx.fillStyle = "#FF0000";
       canvasCtx.fill();
     }
   }
@@ -234,6 +229,16 @@ function onResults(results) {
         };
 
         // draw a point at the middle point
+        canvasCtx.beginPath();
+        canvasCtx.arc(
+          middlePoint.x * canvasElement.width,
+          middlePoint.y * canvasElement.height,
+          5,
+          0,
+          2 * Math.PI
+        );
+        canvasCtx.fillStyle = "#0000FF";
+        canvasCtx.fill();
 
         if (
           Math.sqrt(
@@ -241,9 +246,8 @@ function onResults(results) {
               Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
           ) < 50
         ) {
-          decrementScore();
-
           output.redBalls.splice(output.redBalls.indexOf(point), 1);
+          decrementScore();
         }
       }
     }
@@ -280,7 +284,9 @@ function onResults(results) {
               ) + Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
             ),
           });
+
           incrementScore();
+
           output.greenBalls.splice(output.greenBalls.indexOf(point), 1);
         }
       }
@@ -288,9 +294,9 @@ function onResults(results) {
   });
 
   // if green and red balls are empty, then regenerate them
-  if (output.greenBalls.length == 0) {
-    // set red balls array to 0
+  if (output.redBalls.length == 0 && output.greenBalls.length == 0) {
     generateRandomPoints(points, numberofGreenBalls, numberofRedBalls);
+    document.body.classList.remove("loaded");
   }
 }
 const hands = new mpHands.Hands(config);

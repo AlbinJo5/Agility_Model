@@ -74,11 +74,10 @@ body {
   display: block;
   position: relative;
   left: 0;
-  outline: 20px solid greenyellow;
-  outline-offset: -20px;
+  outline: 5px solid greenyellow;
+  outline-offset: -5px;
   top: 0;
 }
-
 
 .control-panel {
   position: absolute;
@@ -118,4 +117,37 @@ body {
 
 .loaded .loading {
   opacity: 0;
+}
+
+h3 {
+  position: absolute;
+  font-size: 70px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  text-align: center;
+  width: 150px;
+  top: -5px;
+  right: -5px;
+  background-color: #abff2e;
+}
+
+h4 {
+  z-index: 100;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 180px;
+  top: -5px;
+  left: -5px;
+  background-color: #abff2e;
+  font-size: 50px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
 }
