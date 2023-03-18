@@ -12,7 +12,89 @@ var seconds = 60;
 var score = 1000;
 var el = document.getElementById("seconds-counter");
 var sc = document.getElementById("score");
+
 sc.innerText = 2000;
+
+// level master
+// leftside ball x =10 , y = 100 to 800
+// rightside ball x = 880 , y = 100 to 800
+// topside x = 150 to 750 , y = 100
+// bottomside x = 150 to 750 , y = 900
+
+// possible combinations
+
+const levelPoints = [
+  { x: 10, y: 200 },
+  { x: 10, y: 300 },
+  { x: 10, y: 400 },
+  { x: 10, y: 500 },
+  { x: 10, y: 600 },
+  { x: 10, y: 700 },
+  { x: 10, y: 800 },
+  { x: 880, y: 200 },
+  { x: 880, y: 300 },
+  { x: 880, y: 400 },
+  { x: 880, y: 500 },
+  { x: 880, y: 600 },
+  { x: 880, y: 700 },
+  { x: 880, y: 800 },
+  { x: 150, y: 100 },
+  { x: 300, y: 100 },
+  { x: 450, y: 100 },
+  { x: 600, y: 100 },
+  { x: 750, y: 100 },
+  { x: 150, y: 900 },
+  { x: 300, y: 900 },
+  { x: 450, y: 900 },
+  { x: 600, y: 900 },
+  { x: 750, y: 900 },
+];
+
+// level generator
+const levelGenerator = async (numberOfBalls) => {
+  var output = [];
+  // randomly put leftside or rightside or topside or bottomside
+  for (var i = 0; i < numberOfBalls; i++) {
+    var randomIndex = Math.floor(Math.random() * levelPoints.length);
+
+    var data = levelPoints[randomIndex];
+    //  random true or false
+    var randomBoolean = Math.random() >= 0.5;
+    if (randomBoolean) {
+      data.isGreen = true;
+    } else {
+      data.isGreen = false;
+    }
+
+    output.push(data);
+    levelPoints.splice(randomIndex, 1);
+  }
+  return output;
+};
+
+var balls;
+
+async function generateBalls() {
+  balls = await levelGenerator(5);
+}
+
+generateBalls();
+
+var Ballwidth;
+var Ballheight;
+
+// if screen is tablet or mobile then change the ball size
+if (window.outerWidth < 760) {
+  console.log(window.outerWidth);
+  Ballwidth = 200;
+  Ballheight = 100;
+  console.log("mobile");
+} else {
+  console.log(window.innerWidth);
+  Ballwidth = 200;
+  Ballheight = 130;
+  console.log("tab");
+}
 
 function decrementScore() {
   if (score >= 0) {
@@ -215,10 +297,15 @@ function onResults(results) {
   var greenImg = new Image();
   greenImg.src = "./assets/green.svg";
 
-  output.redBalls.forEach((point) => {
-    canvasCtx.drawImage(redImg, point.x, point.y, 100, 100);
+  balls.forEach((point) => {
+    canvasCtx.drawImage(
+      point.isGreen ? greenImg : redImg,
+      point.x,
+      point.y,
+      Ballwidth,
+      Ballheight
+    );
 
-    // if the above drawn circle touches the red ball, then remove the red ball
     if (results.multiHandLandmarks && results.multiHandedness) {
       for (let index = 0; index < results.multiHandLandmarks.length; index++) {
         const landmarks = results.multiHandLandmarks[index];
@@ -227,7 +314,6 @@ function onResults(results) {
           y: (landmarks[9].y + landmarks[0].y) / 2,
           z: (landmarks[9].z + landmarks[0].z) / 2,
         };
-
         // draw a point at the middle point
         canvasCtx.beginPath();
         canvasCtx.arc(
@@ -242,56 +328,95 @@ function onResults(results) {
 
         if (
           Math.sqrt(
-            Math.pow(middlePoint.x * canvasElement.width - (point.x - 20), 2) +
+            Math.pow(point.x * canvasElement.width - (point.x - 20), 2) +
               Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
           ) < 50
         ) {
-          output.redBalls.splice(output.redBalls.indexOf(point), 1);
+          balls.splice(output.redBalls.indexOf(point), 1);
           decrementScore();
         }
       }
     }
+
+
   });
 
-  output.greenBalls.forEach((point) => {
-    canvasCtx.drawImage(greenImg, point.x, point.y, 100, 100);
+  // output.redBalls.forEach((point) => {
+  //   canvasCtx.drawImage(redImg, point.x, point.y, 100, 100);
 
-    // if the above drawn circle touches the green ball, then remove the green ball
-    if (results.multiHandLandmarks && results.multiHandedness) {
-      for (let index = 0; index < results.multiHandLandmarks.length; index++) {
-        const landmarks = results.multiHandLandmarks[index];
-        const middlePoint = {
-          x: (landmarks[9].x + landmarks[0].x) / 2,
-          y: (landmarks[9].y + landmarks[0].y) / 2,
-          z: (landmarks[9].z + landmarks[0].z) / 2,
-        };
+  //   // if the above drawn circle touches the red ball, then remove the red ball
+  //   if (results.multiHandLandmarks && results.multiHandedness) {
+  //     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+  //       const landmarks = results.multiHandLandmarks[index];
+  //       const middlePoint = {
+  //         x: (landmarks[9].x + landmarks[0].x) / 2,
+  //         y: (landmarks[9].y + landmarks[0].y) / 2,
+  //         z: (landmarks[9].z + landmarks[0].z) / 2,
+  //       };
+  //       // draw a point at the middle point
+  //       canvasCtx.beginPath();
+  //       canvasCtx.arc(
+  //         middlePoint.x * canvasElement.width,
+  //         middlePoint.y * canvasElement.height,
+  //         5,
+  //         0,
+  //         2 * Math.PI
+  //       );
+  //       canvasCtx.fillStyle = "#0000FF";
+  //       canvasCtx.fill();
 
-        if (
-          Math.sqrt(
-            Math.pow(middlePoint.x * canvasElement.width - (point.x - 20), 2) +
-              Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-          ) < 50
-        ) {
-          console.table({
-            x: middlePoint.x * canvasElement.width,
-            y: middlePoint.y * canvasElement.height,
-            pointX: point.x,
-            pointY: point.y,
-            distance: Math.sqrt(
-              Math.pow(
-                middlePoint.x * canvasElement.width - (point.x - 20),
-                2
-              ) + Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-            ),
-          });
+  //       if (
+  //         Math.sqrt(
+  //           Math.pow(.x * canvasElement.width - (point.x - 20), 2) +
+  //             Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
+  //         ) < 50
+  //       ) {
+  //         output.redBalls.splice(output.redBalls.indexOf(point), 1);
+  //         decrementScore();
+  //       }
+  //     }
+  //   }
+  // });
 
-          incrementScore();
+  // output.greenBalls.forEach((point) => {
+  //   canvasCtx.drawImage(greenImg, point.x, point.y, 100, 100);
 
-          output.greenBalls.splice(output.greenBalls.indexOf(point), 1);
-        }
-      }
-    }
-  });
+  //   // if the above drawn circle touches the green ball, then remove the green ball
+  //   if (results.multiHandLandmarks && results.multiHandedness) {
+  //     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+  //       const landmarks = results.multiHandLandmarks[index];
+  //       const middlePoint = {
+  //         x: (landmarks[9].x + landmarks[0].x) / 2,
+  //         y: (landmarks[9].y + landmarks[0].y) / 2,
+  //         z: (landmarks[9].z + landmarks[0].z) / 2,
+  //       };
+
+  //       if (
+  //         Math.sqrt(
+  //           Math.pow(middlePoint.x * canvasElement.width - (point.x - 20), 2) +
+  //             Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
+  //         ) < 50
+  //       ) {
+  //         console.table({
+  //           x: middlePoint.x * canvasElement.width,
+  //           y: middlePoint.y * canvasElement.height,
+  //           pointX: point.x,
+  //           pointY: point.y,
+  //           distance: Math.sqrt(
+  //             Math.pow(
+  //               middlePoint.x * canvasElement.width - (point.x - 20),
+  //               2
+  //             ) + Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
+  //           ),
+  //         });
+
+  //         incrementScore();
+
+  //         output.greenBalls.splice(output.greenBalls.indexOf(point), 1);
+  //       }
+  //     }
+  //   }
+  // });
 
   // if green and red balls are empty, then regenerate them
   if (output.redBalls.length == 0 && output.greenBalls.length == 0) {
