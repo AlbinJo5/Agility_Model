@@ -8,7 +8,7 @@ const controls3d = window;
 // See: https://cdn.jsdelivr.net/npm/device-detector-js@2.2.10/README.md for
 // legal values for client and os
 
-var seconds = 60;
+var seconds = 400;
 var score = 1000;
 var el = document.getElementById("seconds-counter");
 var sc = document.getElementById("score");
@@ -24,13 +24,13 @@ sc.innerText = 2000;
 // possible combinations
 
 const levelPoints = [
-  { x: 10, y: 200 },
-  { x: 10, y: 300 },
-  { x: 10, y: 400 },
-  { x: 10, y: 500 },
-  { x: 10, y: 600 },
-  { x: 10, y: 700 },
-  { x: 10, y: 800 },
+  { x: 125, y: 200 },
+  { x: 125, y: 300 },
+  { x: 125, y: 400 },
+  { x: 125, y: 500 },
+  { x: 125, y: 600 },
+  { x: 125, y: 700 },
+  { x: 125, y: 800 },
   { x: 880, y: 200 },
   { x: 880, y: 300 },
   { x: 880, y: 400 },
@@ -83,16 +83,24 @@ generateBalls();
 var Ballwidth;
 var Ballheight;
 
+var decreaseX = 0;
+var decreaseY = 0;
+
 // if screen is tablet or mobile then change the ball size
 if (window.outerWidth < 760) {
   console.log(window.outerWidth);
-  Ballwidth = 200;
-  Ballheight = 100;
+  Ballwidth = 100;
+  Ballheight = 50;
+  decreaseX = 50;
+  decreaseY = 25;
+
   console.log("mobile");
 } else {
   console.log(window.innerWidth);
-  Ballwidth = 200;
-  Ballheight = 130;
+  Ballwidth = 100;
+  Ballheight = 80;
+  decreaseX = 50;
+  decreaseY = 40;
   console.log("tab");
 }
 
@@ -266,6 +274,13 @@ function onResults(results) {
     canvasElement.width,
     canvasElement.height
   );
+  var redImg = new Image();
+  redImg.src = "./assets/red.svg";
+
+  var greenImg = new Image();
+  greenImg.src = "./assets/green.svg";
+
+  var circle_area = [];
 
   if (results.multiHandLandmarks && results.multiHandedness) {
     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
@@ -287,25 +302,68 @@ function onResults(results) {
       );
       canvasCtx.fillStyle = "#FF0000";
       canvasCtx.fill();
+
+      canvasCtx.lineWidth = 5;
+      // draw a line from middle point to the tip left side of the canvas
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(
+        middlePoint.x * canvasElement.width,
+        middlePoint.y * canvasElement.height
+      );
+      canvasCtx.lineTo(0, middlePoint.y * canvasElement.height);
+      canvasCtx.stroke();
+      // render the length of the line above the line
+      canvasCtx.font = "30px Arial";
+      canvasCtx.fillStyle = "red";
+      canvasCtx.fillText(
+        Math.round(middlePoint.x * canvasElement.width) + "px",
+        0,
+        middlePoint.y * canvasElement.height
+      );
+      // draw a line from middle point to the tip bottom side of the canvas
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(
+        middlePoint.x * canvasElement.width,
+        middlePoint.y * canvasElement.height
+      );
+      canvasCtx.lineTo(
+        middlePoint.x * canvasElement.width,
+        canvasElement.height
+      );
+      canvasCtx.stroke();
+
+      // render the length of the line right side the line
+      canvasCtx.font = "30px Arial";
+      canvasCtx.fillStyle = "red";
+      canvasCtx.fillText(
+        Math.round(middlePoint.y * canvasElement.height) + "px",
+        middlePoint.x * canvasElement.width,
+        canvasElement.height
+      );
     }
   }
   canvasCtx.restore();
 
-  var redImg = new Image();
-  redImg.src = "./assets/red.svg";
-
-  var greenImg = new Image();
-  greenImg.src = "./assets/green.svg";
-
-  balls.forEach((point) => {
+  balls.forEach((point, i) => {
     canvasCtx.drawImage(
       point.isGreen ? greenImg : redImg,
-      point.x,
-      point.y,
+      point.x - decreaseX,
+      point.y - decreaseY,
       Ballwidth,
       Ballheight
     );
 
+    // draw a line from middle point to the  left side and bottom side of the canvas from the balls
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(point.x, point.y);
+    canvasCtx.lineTo(0, point.y);
+    canvasCtx.stroke();
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(point.x, point.y);
+    canvasCtx.lineTo(point.x, canvasElement.height);
+    canvasCtx.stroke();
+
+    // if the above drawn circle touches the ball then remove the ball
     if (results.multiHandLandmarks && results.multiHandedness) {
       for (let index = 0; index < results.multiHandLandmarks.length; index++) {
         const landmarks = results.multiHandLandmarks[index];
@@ -314,69 +372,38 @@ function onResults(results) {
           y: (landmarks[9].y + landmarks[0].y) / 2,
           z: (landmarks[9].z + landmarks[0].z) / 2,
         };
-        // draw a point at the middle point
-        canvasCtx.beginPath();
-        canvasCtx.arc(
-          middlePoint.x * canvasElement.width,
-          middlePoint.y * canvasElement.height,
-          5,
-          0,
-          2 * Math.PI
+        console.table(
+          "Ball" +
+            i +
+            " " +
+            Math.sqrt(
+              Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
+                Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
+            )
         );
-        canvasCtx.fillStyle = "#0000FF";
-        canvasCtx.fill();
-
         if (
           Math.sqrt(
-            Math.pow(point.x * canvasElement.width - (point.x - 20), 2) +
-              Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
+            Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
+              Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
           ) < 50
         ) {
-          balls.splice(output.redBalls.indexOf(point), 1);
-          decrementScore();
+          console.log("collision");
+          console.table(
+            "Ball" +
+              i +
+              " " +
+              Math.sqrt(
+                Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
+                  Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
+              )
+          );
+
+          balls.splice(balls.indexOf(point), 1);
+          break;
         }
       }
     }
-
-
   });
-
-  // output.redBalls.forEach((point) => {
-  //   canvasCtx.drawImage(redImg, point.x, point.y, 100, 100);
-
-  //   // if the above drawn circle touches the red ball, then remove the red ball
-  //   if (results.multiHandLandmarks && results.multiHandedness) {
-  //     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
-  //       const landmarks = results.multiHandLandmarks[index];
-  //       const middlePoint = {
-  //         x: (landmarks[9].x + landmarks[0].x) / 2,
-  //         y: (landmarks[9].y + landmarks[0].y) / 2,
-  //         z: (landmarks[9].z + landmarks[0].z) / 2,
-  //       };
-  //       // draw a point at the middle point
-  //       canvasCtx.beginPath();
-  //       canvasCtx.arc(
-  //         middlePoint.x * canvasElement.width,
-  //         middlePoint.y * canvasElement.height,
-  //         5,
-  //         0,
-  //         2 * Math.PI
-  //       );
-  //       canvasCtx.fillStyle = "#0000FF";
-  //       canvasCtx.fill();
-
-  //       if (
-  //         Math.sqrt(
-  //           Math.pow(.x * canvasElement.width - (point.x - 20), 2) +
-  //             Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-  //         ) < 50
-  //       ) {
-  //         output.redBalls.splice(output.redBalls.indexOf(point), 1);
-  //         decrementScore();
-  //       }
-  //     }
-  //   }
-  // });
 
   // output.greenBalls.forEach((point) => {
   //   canvasCtx.drawImage(greenImg, point.x, point.y, 100, 100);
