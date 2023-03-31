@@ -8,12 +8,36 @@ const controls3d = window;
 // See: https://cdn.jsdelivr.net/npm/device-detector-js@2.2.10/README.md for
 // legal values for client and os
 
-var seconds = 400;
+const levelConfig = {
+  level: 1,
+  target: 10,
+  ballCounts: 3,
+  ballSpeed: 3000,
+  lives: 3,
+  isCompleted: false,
+};
+
+async function firebaseLevelConfig() {
+  // connect to firebase
+}
+
+firebaseLevelConfig();
+
+const targetHit = () => {
+  // connect to firebase
+  firebaseLevelConfig();
+};
+
+const gameOver = () => {
+  // connect to firebase
+  firebaseLevelConfig();
+};
+
+var streaks = 0;
 var score = 1000;
+var life = levelConfig.lives;
 var el = document.getElementById("seconds-counter");
 var sc = document.getElementById("score");
-
-sc.innerText = 2000;
 
 // level master
 // leftside ball x =10 , y = 100 to 800
@@ -31,13 +55,13 @@ const levelPoints = [
   { x: 125, y: 600 },
   { x: 125, y: 700 },
   { x: 125, y: 800 },
-  { x: 880, y: 200 },
-  { x: 880, y: 300 },
-  { x: 880, y: 400 },
-  { x: 880, y: 500 },
-  { x: 880, y: 600 },
-  { x: 880, y: 700 },
-  { x: 880, y: 800 },
+  { x: 980, y: 200 },
+  { x: 980, y: 300 },
+  { x: 980, y: 400 },
+  { x: 980, y: 500 },
+  { x: 980, y: 600 },
+  { x: 980, y: 700 },
+  { x: 980, y: 800 },
   { x: 150, y: 100 },
   { x: 300, y: 100 },
   { x: 450, y: 100 },
@@ -58,16 +82,28 @@ const levelGenerator = async (numberOfBalls) => {
     var randomIndex = Math.floor(Math.random() * levelPoints.length);
 
     var data = levelPoints[randomIndex];
+
+    // check if the ball is already present
+    var isPresent = output.find((item) => {
+      return item.x === data.x && item.y === data.y;
+    });
+
+    if (isPresent) {
+      i--;
+      continue;
+    }
+
     //  random true or false
     var randomBoolean = Math.random() >= 0.5;
     if (randomBoolean) {
+      console.log("green");
       data.isGreen = true;
     } else {
+      console.log("red");
       data.isGreen = false;
     }
 
     output.push(data);
-    levelPoints.splice(randomIndex, 1);
   }
   return output;
 };
@@ -75,10 +111,12 @@ const levelGenerator = async (numberOfBalls) => {
 var balls;
 
 async function generateBalls() {
-  balls = await levelGenerator(5);
+  balls = await levelGenerator(levelConfig.ballCounts);
 }
 
 generateBalls();
+
+setInterval(generateBalls, levelConfig.ballSpeed);
 
 var Ballwidth;
 var Ballheight;
@@ -105,24 +143,26 @@ if (window.outerWidth < 760) {
 }
 
 function decrementScore() {
-  if (score >= 0) {
-    score -= 100;
-    seconds -= 5;
-    el.innerText = seconds;
-    sc.innerText = score;
+  streaks = 0;
+  life = life - 1;
+  el.innerText = life;
+
+  if (life >= 0) {
+    console.log("game over");
+    gameOver();
     return;
   }
+  el.innerText = streaks;
 }
 
 function incrementScore() {
-  if (score >= 0) {
-    score += 100;
-    seconds += 5;
-    el.innerText = seconds;
-
-    sc.innerText = score;
+  ++streaks;
+  if (streaks >= levelConfig.target) {
+    console.log("level completed");
+    targetHit();
     return;
   }
+  el.innerText = streaks;
 }
 
 function incrementSeconds() {
@@ -305,41 +345,41 @@ function onResults(results) {
 
       canvasCtx.lineWidth = 5;
       // draw a line from middle point to the tip left side of the canvas
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(
-        middlePoint.x * canvasElement.width,
-        middlePoint.y * canvasElement.height
-      );
-      canvasCtx.lineTo(0, middlePoint.y * canvasElement.height);
-      canvasCtx.stroke();
-      // render the length of the line above the line
-      canvasCtx.font = "30px Arial";
-      canvasCtx.fillStyle = "red";
-      canvasCtx.fillText(
-        Math.round(middlePoint.x * canvasElement.width) + "px",
-        0,
-        middlePoint.y * canvasElement.height
-      );
+      // canvasCtx.beginPath();
+      // canvasCtx.moveTo(
+      //   middlePoint.x * canvasElement.width,
+      //   middlePoint.y * canvasElement.height
+      // );
+      // canvasCtx.lineTo(0, middlePoint.y * canvasElement.height);
+      // canvasCtx.stroke();
+      // // render the length of the line above the line
+      // canvasCtx.font = "30px Arial";
+      // canvasCtx.fillStyle = "red";
+      // canvasCtx.fillText(
+      //   Math.round(middlePoint.x * canvasElement.width) + "px",
+      //   0,
+      //   middlePoint.y * canvasElement.height
+      // );
       // draw a line from middle point to the tip bottom side of the canvas
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(
-        middlePoint.x * canvasElement.width,
-        middlePoint.y * canvasElement.height
-      );
-      canvasCtx.lineTo(
-        middlePoint.x * canvasElement.width,
-        canvasElement.height
-      );
-      canvasCtx.stroke();
+      // canvasCtx.beginPath();
+      // canvasCtx.moveTo(
+      //   middlePoint.x * canvasElement.width,
+      //   middlePoint.y * canvasElement.height
+      // );
+      // canvasCtx.lineTo(
+      //   middlePoint.x * canvasElement.width,
+      //   canvasElement.height
+      // );
+      // canvasCtx.stroke();
 
-      // render the length of the line right side the line
-      canvasCtx.font = "30px Arial";
-      canvasCtx.fillStyle = "red";
-      canvasCtx.fillText(
-        Math.round(middlePoint.y * canvasElement.height) + "px",
-        middlePoint.x * canvasElement.width,
-        canvasElement.height
-      );
+      // // render the length of the line right side the line
+      // canvasCtx.font = "30px Arial";
+      // canvasCtx.fillStyle = "red";
+      // canvasCtx.fillText(
+      //   Math.round(middlePoint.y * canvasElement.height) + "px",
+      //   middlePoint.x * canvasElement.width,
+      //   canvasElement.height
+      // );
     }
   }
   canvasCtx.restore();
@@ -354,14 +394,14 @@ function onResults(results) {
     );
 
     // draw a line from middle point to the  left side and bottom side of the canvas from the balls
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(point.x, point.y);
-    canvasCtx.lineTo(0, point.y);
-    canvasCtx.stroke();
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(point.x, point.y);
-    canvasCtx.lineTo(point.x, canvasElement.height);
-    canvasCtx.stroke();
+    // canvasCtx.beginPath();
+    // canvasCtx.moveTo(point.x, point.y);
+    // canvasCtx.lineTo(0, point.y);
+    // canvasCtx.stroke();
+    // canvasCtx.beginPath();
+    // canvasCtx.moveTo(point.x, point.y);
+    // canvasCtx.lineTo(point.x, canvasElement.height);
+    // canvasCtx.stroke();
 
     // if the above drawn circle touches the ball then remove the ball
     if (results.multiHandLandmarks && results.multiHandedness) {
@@ -372,32 +412,19 @@ function onResults(results) {
           y: (landmarks[9].y + landmarks[0].y) / 2,
           z: (landmarks[9].z + landmarks[0].z) / 2,
         };
-        console.table(
-          "Ball" +
-            i +
-            " " +
-            Math.sqrt(
-              Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
-                Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
-            )
-        );
+
         if (
           Math.sqrt(
             Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
               Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
           ) < 50
         ) {
-          console.log("collision");
-          console.table(
-            "Ball" +
-              i +
-              " " +
-              Math.sqrt(
-                Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
-                  Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
-              )
-          );
-
+          if (point.isGreen) {
+            score += 1;
+            incrementScore();
+          } else {
+            decrementScore();
+          }
           balls.splice(balls.indexOf(point), 1);
           break;
         }
