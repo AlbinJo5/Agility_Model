@@ -123,6 +123,7 @@ const fpsControl = new controls.FPS();
 // Optimization: Turn off animated spinner after its hiding animation is done.
 const spinner = document.querySelector('.loading');
 spinner.ontransitionend = () => {
+    console.log('spinner transition end');
     spinner.style.display = 'none';
 };
 function onResults(results) {
@@ -230,6 +231,7 @@ function onResults(results) {
     // if green and red balls are empty, then regenerate them
     if (output.redBalls.length == 0 && output.greenBalls.length == 0) {
         generateRandomPoints(points, numberofGreenBalls, numberofRedBalls);
+        document.body.classList.remove('loaded');
     }
 }
 const hands = new mpHands.Hands(config);
