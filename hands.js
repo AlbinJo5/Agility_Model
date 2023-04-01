@@ -24,6 +24,28 @@ function getParam(paramName) {
     return paramValue === undefined ? null : decodeURIComponent(paramValue);
 }
 
+const levelMaster = [
+    {
+        target: 10,
+        ballCount: 3,
+        ballSpeed: 3000,
+        toUpdateLives: 3,
+    },
+    {
+        target: 20,
+        ballCount: 4,
+        ballSpeed: 2500,
+        toUpdateLives: 3,
+    },
+    {
+        target: 40,
+        ballCount: 5,
+        ballSpeed: 2000,
+        toUpdateLives: 5,
+    },
+
+]
+
 
 async function getAgilityData() {
     const userId = getParam('userId');
@@ -44,14 +66,24 @@ const levelData = await getAgilityData();
 var levelConfig = {
 
     level: levelData.level,
-    target: levelData.target,
-    ballCount: levelData.ballCount,
-    ballSpeed: levelData.ballSpeed,
+    target: levelMaster[levelData.level - 1].target,
+    ballCount: levelMaster[levelData.level - 1].ballCount,
+    ballSpeed: levelMaster[levelData.level - 1].ballSpeed,
     lives: levelData.lives,
     selectedBallType: levelData.selectedBallType,
 };
 
+var streaks = 0;
+// var score = 1000;
+var life = levelConfig.lives;
+var el = document.getElementById("seconds-counter");
+// var sc = document.getElementById("score");
+
+var isCompleted = false;
+
+
 console.log(levelConfig);
+
 
 
 
@@ -60,29 +92,34 @@ const targetHit = async () => {
 
     const updatedLevelData = {
         level: levelConfig.level + 1,
-        target: levelConfig.target * 2,
-        ballCount: levelConfig.ballCount + 1,
-        ballSpeed: levelConfig.ballSpeed * 1.2,
-        lives: levelConfig.lives,
-        selectedBallType: levelConfig.selectedBallType,
+        lives: levelMaster[levelConfig.level + 1].toUpdateLives,
     }
     const userId = getParam('userId');
     //  set docs
     const docRef = doc(db, "Users", userId, "Agility", "normal");
-    await setDoc(docRef, updatedLevelData);
+    await setDoc(docRef, updatedLevelData, { merge: true });
 
 };
 
-const gameOver = () => {
+const gameOver = async () => {
     // connect to firebase
 
+    const updatedLevelData = {
+        level: levelConfig.level - 1,
+        lives: levelMaster[levelConfig.level - 1].toUpdateLives,
+    }
+
+    isCompleted = true;
+
+    const userId = getParam('userId');
+    //  set docs
+
+    const docRef = doc(db, "Users", userId, "Agility", "normal");
+    await setDoc(docRef, updatedLevelData, { merge: true });
+
 };
 
-var streaks = 0;
-var score = 1000;
-var life = levelConfig.lives;
-var el = document.getElementById("seconds-counter");
-var sc = document.getElementById("score");
+
 
 // level master
 // leftside ball x =10 , y = 100 to 800
@@ -188,16 +225,19 @@ if (window.outerWidth < 760) {
 }
 
 function decrementScore() {
-    streaks = 0;
-    life = life - 1;
-    el.innerText = life;
-
-    if (life >= 0) {
-        console.log("game over");
+    if (levelConfig.lives == 1) {
+        //  infinite lives
+        el.innerText = "∞";
+    }
+    else {
+        life = life - 1;
+        levelConfig.lives = life;
+        el.innerText = life;
+    }
+    if (life == 0 && levelConfig.lives != 1) {
         gameOver();
         return;
     }
-    el.innerText = streaks;
 }
 
 function incrementScore() {
@@ -233,7 +273,6 @@ if (window.innerWidth > window.innerHeight) {
     gridHeight = window.innerWidth * acpectRatio;
 }
 
-var level = 1;
 var numberOfPoints = 6;
 var numberofGreenBalls = 8;
 var numberofRedBalls = 5;
@@ -296,7 +335,6 @@ async function generateRandomPoints(
 }
 await generateRandomPoints(points, numberofGreenBalls, numberofRedBalls);
 
-console.log(output);
 
 testSupport([{ client: "Chrome" }]);
 function testSupport(supportedDevices) {
@@ -344,6 +382,10 @@ spinner.ontransitionend = () => {
     console.log("spinner transition end");
     spinner.style.display = "none";
 };
+
+var handsDetected = false;
+var continousHandsDetected = 0;
+
 function onResults(results) {
     // Hide the spinner.
     document.body.classList.add("loaded");
@@ -365,10 +407,22 @@ function onResults(results) {
     var greenImg = new Image();
     greenImg.src = "./assets/green.svg";
 
-    var circle_area = [];
 
     if (results.multiHandLandmarks && results.multiHandedness) {
         for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+
+            // if 2 hands are detected for 3 seconds 
+
+            if (results.multiHandLandmarks.length == 2) {
+                continousHandsDetected++;
+                if (continousHandsDetected > 100) {
+                    handsDetected = true;
+                }
+            } else {
+                continousHandsDetected = 0;
+            }
+
+
             // find the middle point between wrist and middle finger
             const landmarks = results.multiHandLandmarks[index];
             const middlePoint = {
@@ -389,142 +443,62 @@ function onResults(results) {
             canvasCtx.fill();
 
             canvasCtx.lineWidth = 5;
-            // draw a line from middle point to the tip left side of the canvas
-            // canvasCtx.beginPath();
-            // canvasCtx.moveTo(
-            //   middlePoint.x * canvasElement.width,
-            //   middlePoint.y * canvasElement.height
-            // );
-            // canvasCtx.lineTo(0, middlePoint.y * canvasElement.height);
-            // canvasCtx.stroke();
-            // // render the length of the line above the line
-            // canvasCtx.font = "30px Arial";
-            // canvasCtx.fillStyle = "red";
-            // canvasCtx.fillText(
-            //   Math.round(middlePoint.x * canvasElement.width) + "px",
-            //   0,
-            //   middlePoint.y * canvasElement.height
-            // );
-            // draw a line from middle point to the tip bottom side of the canvas
-            // canvasCtx.beginPath();
-            // canvasCtx.moveTo(
-            //   middlePoint.x * canvasElement.width,
-            //   middlePoint.y * canvasElement.height
-            // );
-            // canvasCtx.lineTo(
-            //   middlePoint.x * canvasElement.width,
-            //   canvasElement.height
-            // );
-            // canvasCtx.stroke();
-
-            // // render the length of the line right side the line
-            // canvasCtx.font = "30px Arial";
-            // canvasCtx.fillStyle = "red";
-            // canvasCtx.fillText(
-            //   Math.round(middlePoint.y * canvasElement.height) + "px",
-            //   middlePoint.x * canvasElement.width,
-            //   canvasElement.height
-            // );
         }
     }
     canvasCtx.restore();
 
-    balls.forEach((point, i) => {
-        canvasCtx.drawImage(
-            point.isGreen ? greenImg : redImg,
-            point.x - decreaseX,
-            point.y - decreaseY,
-            Ballwidth,
-            Ballheight
-        );
+    if (handsDetected) {
+        balls.forEach((point, i) => {
+            canvasCtx.drawImage(
+                point.isGreen ? greenImg : redImg,
+                point.x - decreaseX,
+                point.y - decreaseY,
+                Ballwidth,
+                Ballheight
+            );
 
-        // draw a line from middle point to the  left side and bottom side of the canvas from the balls
-        // canvasCtx.beginPath();
-        // canvasCtx.moveTo(point.x, point.y);
-        // canvasCtx.lineTo(0, point.y);
-        // canvasCtx.stroke();
-        // canvasCtx.beginPath();
-        // canvasCtx.moveTo(point.x, point.y);
-        // canvasCtx.lineTo(point.x, canvasElement.height);
-        // canvasCtx.stroke();
 
-        // if the above drawn circle touches the ball then remove the ball
-        if (results.multiHandLandmarks && results.multiHandedness) {
-            for (let index = 0; index < results.multiHandLandmarks.length; index++) {
-                const landmarks = results.multiHandLandmarks[index];
-                const middlePoint = {
-                    x: (landmarks[9].x + landmarks[0].x) / 2,
-                    y: (landmarks[9].y + landmarks[0].y) / 2,
-                    z: (landmarks[9].z + landmarks[0].z) / 2,
-                };
+            // if the above drawn circle touches the ball then remove the ball
+            if (results.multiHandLandmarks && results.multiHandedness) {
+                for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+                    const landmarks = results.multiHandLandmarks[index];
+                    const middlePoint = {
+                        x: (landmarks[9].x + landmarks[0].x) / 2,
+                        y: (landmarks[9].y + landmarks[0].y) / 2,
+                        z: (landmarks[9].z + landmarks[0].z) / 2,
+                    };
 
-                if (
-                    Math.sqrt(
-                        Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
-                        Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
-                    ) < 50
-                ) {
-                    if (point.isGreen) {
-                        score += 1;
-                        incrementScore();
-                    } else {
-                        decrementScore();
+                    if (
+                        Math.sqrt(
+                            Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
+                            Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
+                        ) < 50
+                    ) {
+                        if (point.isGreen) {
+                            score += 1;
+                            incrementScore();
+                        } else {
+                            decrementScore();
+                        }
+                        balls.splice(balls.indexOf(point), 1);
+                        break;
                     }
-                    balls.splice(balls.indexOf(point), 1);
-                    break;
                 }
             }
-        }
-    });
-
-    // output.greenBalls.forEach((point) => {
-    //   canvasCtx.drawImage(greenImg, point.x, point.y, 100, 100);
-
-    //   // if the above drawn circle touches the green ball, then remove the green ball
-    //   if (results.multiHandLandmarks && results.multiHandedness) {
-    //     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
-    //       const landmarks = results.multiHandLandmarks[index];
-    //       const middlePoint = {
-    //         x: (landmarks[9].x + landmarks[0].x) / 2,
-    //         y: (landmarks[9].y + landmarks[0].y) / 2,
-    //         z: (landmarks[9].z + landmarks[0].z) / 2,
-    //       };
-
-    //       if (
-    //         Math.sqrt(
-    //           Math.pow(middlePoint.x * canvasElement.width - (point.x - 20), 2) +
-    //             Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-    //         ) < 50
-    //       ) {
-    //         console.table({
-    //           x: middlePoint.x * canvasElement.width,
-    //           y: middlePoint.y * canvasElement.height,
-    //           pointX: point.x,
-    //           pointY: point.y,
-    //           distance: Math.sqrt(
-    //             Math.pow(
-    //               middlePoint.x * canvasElement.width - (point.x - 20),
-    //               2
-    //             ) + Math.pow(middlePoint.y * canvasElement.height - point.y, 2)
-    //           ),
-    //         });
-
-    //         incrementScore();
-
-    //         output.greenBalls.splice(output.greenBalls.indexOf(point), 1);
-    //       }
-    //     }
-    //   }
-    // });
-
-    // if green and red balls are empty, then regenerate them
-    if (output.redBalls.length == 0 && output.greenBalls.length == 0) {
-        generateRandomPoints(points, numberofGreenBalls, numberofRedBalls);
-        document.body.classList.remove("loaded");
+        });
     }
+
+
 }
 const hands = new mpHands.Hands(config);
-hands.onResults(onResults);
+
+// only run the model if the game is not completed
+// hands.onResults(onResults);
+hands.onResults((results) => {
+    if (!isCompleted) {
+        onResults(results);
+    }
+});
 
 new controls.ControlPanel(controlsElement, {
     selfieMode: true,
