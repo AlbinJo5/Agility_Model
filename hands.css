@@ -74,11 +74,10 @@ body {
   display: block;
   position: relative;
   left: 0;
-  outline: 20px solid greenyellow;
-  outline-offset: -20px;
+  outline: 5px solid greenyellow;
+  outline-offset: -5px;
   top: 0;
 }
-
 
 .control-panel {
   position: absolute;
@@ -118,4 +117,69 @@ body {
 
 .loaded .loading {
   opacity: 0;
+}
+
+h3 {
+  position: absolute;
+  font-size: 70px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  text-align: center;
+  width: 150px;
+
+  top: 5px;
+  border-radius: 50%;
+  /* clip-path: polygon(
+    50% 0%,
+    80% 10%,
+    100% 35%,
+    100% 70%,
+    80% 90%,
+    50% 100%,
+    20% 90%,
+    0% 70%,
+    0% 35%,
+    20% 10%
+  ); */
+  right: 5px;
+  background-color: #abff2e;
+  border-radius: inset(0% 45% 0% 45% round 100px);
+}
+
+h4 {
+  z-index: 100;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 200px;
+  top: 5px;
+  left: 5px;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%, 0% 50%);
+  /* outline: #abff2e solid 5px; */
+  background-color: #abff2e;
+  font-size: 50px;
+  letter-spacing: 2px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+h4:before {
+  /* z-index: 90;
+
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  height: 200px;
+  width: 200px;
+  background-color: #1d87a1; */
 }
