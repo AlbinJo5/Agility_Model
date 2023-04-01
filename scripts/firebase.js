@@ -29,17 +29,6 @@ function getParam(paramName) {
 }
 
 
-// const querySnapshot = await getDocs(collection(db, "Users", userId, "Agility"));
-// var resp;
-// await querySnapshot.forEach((doc) => {
-//     resp = {
-//         id: doc.id,
-//         ...doc.data()
-//     }
-// });
-
-// convert the above to a function that returns the data
-
 export async function getAgilityData() {
     const userId = getParam('userId');
     const querySnapshot = await getDocs(collection(db, "Users", userId, "Agility"));
