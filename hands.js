@@ -77,7 +77,16 @@ var streaks = 0;
 // var score = 1000;
 var life = levelConfig.lives;
 var el = document.getElementById("seconds-counter");
-// var sc = document.getElementById("score");
+
+var gameOverScreen = document.getElementById("gameOver");
+var victoryScreen = document.getElementById("victory");
+var container = document.getElementById("container");
+var sc = document.getElementById("score");
+
+// if level is 1 then show infinite lives
+// sc.innerText =  life;
+sc.innerText = levelConfig.level != "1" ? life : "∞";
+el.innerText = streaks;
 
 var isCompleted = false;
 
@@ -92,8 +101,16 @@ const targetHit = async () => {
 
     const updatedLevelData = {
         level: levelConfig.level + 1,
-        lives: levelMaster[levelConfig.level + 1].toUpdateLives,
+        lives: levelMaster[levelConfig.level].toUpdateLives,
     }
+
+    isCompleted = true;
+    // replace container with victory screen
+    container.style.display = "none";
+    sc.style.display = "none";
+    el.style.display = "none";
+    victoryScreen.style.display = "block";
+
     const userId = getParam('userId');
     //  set docs
     const docRef = doc(db, "Users", userId, "Agility", "normal");
@@ -106,10 +123,15 @@ const gameOver = async () => {
 
     const updatedLevelData = {
         level: levelConfig.level - 1,
-        lives: levelMaster[levelConfig.level - 1].toUpdateLives,
+        lives: levelMaster[levelConfig.level].toUpdateLives,
     }
 
     isCompleted = true;
+    // replace container with gameover screen
+    container.style.display = "none";
+    sc.style.display = "none";
+    el.style.display = "none";
+    gameOverScreen.style.display = "block";
 
     const userId = getParam('userId');
     //  set docs
@@ -197,8 +219,15 @@ async function generateBalls() {
 }
 
 generateBalls();
+// if isCompleted is true then stop the interval
+// setInterval(generateBalls, levelConfig.ballSpeed);
 
-setInterval(generateBalls, levelConfig.ballSpeed);
+setInterval(() => {
+    if (isCompleted) {
+        return;
+    }
+    generateBalls();
+}, levelConfig.ballSpeed);
 
 var Ballwidth;
 var Ballheight;
@@ -225,18 +254,15 @@ if (window.outerWidth < 760) {
 }
 
 function decrementScore() {
-    if (levelConfig.lives == 1) {
-        //  infinite lives
-        el.innerText = "∞";
-    }
-    else {
-        life = life - 1;
-        levelConfig.lives = life;
-        el.innerText = life;
-    }
-    if (life == 0 && levelConfig.lives != 1) {
-        gameOver();
-        return;
+    if (levelConfig.level != "1") {
+        --life;
+        if (life == 0) {
+            gameOver();
+            return;
+        }
+        sc.innerText = life;
+        streaks = 0;
+        el.innerText = 0;
     }
 }
 
@@ -475,7 +501,6 @@ function onResults(results) {
                         ) < 50
                     ) {
                         if (point.isGreen) {
-                            score += 1;
                             incrementScore();
                         } else {
                             decrementScore();
