@@ -151,14 +151,46 @@ h3 {
   border-radius: inset(0% 45% 0% 45% round 100px);
 }
 
-h4 {
+h5 {
+  position: absolute;
+  font-size: 30px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
+  z-index: 100;
+  display: flex;
+  padding-left: 10px;
+  align-items: center;
+  height: 50px;
+  text-align: center;
+  width: 220px;
+  border-radius: 0.5rem;
+
+  top: 5px;
+  /* clip-path: polygon(
+    50% 0%,
+    80% 10%,
+    100% 35%,
+    100% 70%,
+    80% 90%,
+    50% 100%,
+    20% 90%,
+    0% 70%,
+    0% 35%,
+    20% 10%
+  ); */
+  right: 75px;
+  background-color: #abff2e;
+  border-radius: inset(0% 45% 0% 45% round 100px);
+}
+
+.life {
   z-index: 100;
   position: absolute;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   height: 80px;
-  width: 200px;
+  width: 100px;
   top: 5px;
   left: 5px;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%, 0% 50%);
@@ -170,16 +202,46 @@ h4 {
   border-radius: 5px;
 }
 
-h4:before {
-  /* z-index: 90;
+.life svg {
+  height: 40px;
+  width: 40px;
+  margin: 10px;
+}
 
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  height: 200px;
-  width: 200px;
-  background-color: #1d87a1; */
+.victory {
+  position: relative;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
+  letter-spacing: 2px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.victory h3 {
+  position: relative;
+  display: block;
+}
+
+button {
+  padding: 2.5rem 2rem;
+  padding-right: 3rem;
+  border-radius: 0.5rem;
+  font-size: 20px;
+  background: #abff2e;
+  color: white;
+  border: solid 0.1rem #abff2e;
+  clip-path: polygon(
+    0% 20%,
+    60% 20%,
+    60% 0%,
+    100% 50%,
+    60% 100%,
+    60% 80%,
+    0% 80%
+  );
 }
