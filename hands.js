@@ -263,7 +263,7 @@ function decrementScore() {
         sc.innerText = life;
         streaks = 0;
         el.innerText = 0;
-    }
+    }  
 }
 
 function incrementScore() {
