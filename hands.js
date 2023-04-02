@@ -146,7 +146,7 @@ function decrementScore() {
   streaks = 0;
   life = life - 1;
   el.innerText = life;
-
+  
   if (life >= 0) {
     console.log("game over");
     gameOver();
