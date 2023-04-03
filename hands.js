@@ -5,7 +5,12 @@ const controls = window;
 const controls3d = window;
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
-import { getFirestore, setDoc, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js";
+import {
+    getFirestore,
+    setDoc,
+    getDoc,
+    doc,
+} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js";
 const firebaseConfig = {
     apiKey: "AIzaSyBOGaYJUxilYCekjvzd4kmQLIFpEF9ibgU",
     authDomain: "vitofitness-f6879.firebaseapp.com",
@@ -13,14 +18,14 @@ const firebaseConfig = {
     storageBucket: "vitofitness-f6879.appspot.com",
     messagingSenderId: "767780104447",
     appId: "1:767780104447:web:9dcc5fae6f92ede48d84ca",
-    measurementId: "G-4VSWMZ3CVF"
+    measurementId: "G-4VSWMZ3CVF",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 function getParam(paramName) {
-    const paramValue = location.search.split(paramName + '=')[1];
+    const paramValue = location.search.split(paramName + "=")[1];
     return paramValue === undefined ? null : decodeURIComponent(paramValue);
 }
 
@@ -30,32 +35,60 @@ const levelMaster = [
         ballCount: 3,
         ballSpeed: 3000,
         toUpdateLives: 3,
+        difficulty: 0.6,
     },
     {
-        target: 20,
+        target: 10,
         ballCount: 4,
         ballSpeed: 2500,
         toUpdateLives: 3,
+        difficulty: 0.55,
     },
     {
-        target: 40,
+        target: 10,
         ballCount: 5,
         ballSpeed: 2000,
         toUpdateLives: 5,
+        difficulty: 0.5,
     },
-
-]
-
+    {
+        target: 10,
+        ballCount: 5,
+        ballSpeed: 2000,
+        toUpdateLives: 5,
+        difficulty: 0.45,
+    },
+    {
+        target: 10,
+        ballCount: 5,
+        ballSpeed: 2000,
+        toUpdateLives: 5,
+        difficulty: 0.4,
+    },
+    {
+        target: 10,
+        ballCount: 5,
+        ballSpeed: 2000,
+        toUpdateLives: 5,
+        difficulty: 0.35,
+    },
+    {
+        target: 10,
+        ballCount: 5,
+        ballSpeed: 2000,
+        toUpdateLives: 5,
+        difficulty: 0.35,
+    },
+];
 
 async function getAgilityData() {
-    const userId = getParam('userId');
+    const userId = getParam("userId");
     // get document from Users collection / userId / Agility / documentId
     const docRef = doc(db, "Users", userId, "Agility", "normal");
     const docSnap = await getDoc(docRef);
     if (docSnap.exists) {
         return docSnap.data();
-    }
-    else {
+    } else {
         // doc.data() will be undefined in this case
         alert("No such document!");
     }
@@ -64,13 +97,13 @@ async function getAgilityData() {
 const levelData = await getAgilityData();
 
 var levelConfig = {
-
     level: levelData.level,
     target: levelMaster[levelData.level - 1].target,
     ballCount: levelMaster[levelData.level - 1].ballCount,
     ballSpeed: levelMaster[levelData.level - 1].ballSpeed,
     lives: levelData.lives,
     selectedBallType: levelData.selectedBallType,
+    difficulty: levelMaster[levelData.level - 1].difficulty,
 };
 
 var streaks = 0;
@@ -90,19 +123,15 @@ el.innerText = streaks;
 
 var isCompleted = false;
 
-
 console.log(levelConfig);
-
-
-
 
 const targetHit = async () => {
     // update firebase data
 
     const updatedLevelData = {
-        level: levelConfig.level + 1,
-        lives: levelMaster[levelConfig.level].toUpdateLives,
-    }
+        level: levelConfig.level != 6 ? levelConfig.level + 1 : levelConfig.level,
+        lives: levelConfig.level != 6 ? levelMaster[levelConfig.level].toUpdateLives + levelConfig.lives : levelConfig.lives,
+    };
 
     isCompleted = true;
     // replace container with victory screen
@@ -111,11 +140,10 @@ const targetHit = async () => {
     el.style.display = "none";
     victoryScreen.style.display = "block";
 
-    const userId = getParam('userId');
+    const userId = getParam("userId");
     //  set docs
     const docRef = doc(db, "Users", userId, "Agility", "normal");
     await setDoc(docRef, updatedLevelData, { merge: true });
-
 };
 
 const gameOver = async () => {
@@ -124,7 +152,7 @@ const gameOver = async () => {
     const updatedLevelData = {
         level: levelConfig.level - 1,
         lives: levelMaster[levelConfig.level].toUpdateLives,
-    }
+    };
 
     isCompleted = true;
     // replace container with gameover screen
@@ -133,15 +161,12 @@ const gameOver = async () => {
     el.style.display = "none";
     gameOverScreen.style.display = "block";
 
-    const userId = getParam('userId');
+    const userId = getParam("userId");
     //  set docs
 
     const docRef = doc(db, "Users", userId, "Agility", "normal");
     await setDoc(docRef, updatedLevelData, { merge: true });
-
 };
-
-
 
 // level master
 // leftside ball x =10 , y = 100 to 800
@@ -179,7 +204,7 @@ const levelPoints = [
 ];
 
 // level generator
-const levelGenerator = async (numberOfBalls) => {
+const levelGenerator = async (numberOfBalls, difficulty) => {
     var output = [];
     // randomly put leftside or rightside or topside or bottomside
     for (var i = 0; i < numberOfBalls; i++) {
@@ -198,7 +223,7 @@ const levelGenerator = async (numberOfBalls) => {
         }
 
         //  random true or false
-        var randomBoolean = Math.random() >= 0.5;
+        var randomBoolean = Math.random() <= difficulty;
         if (randomBoolean) {
             console.log("green");
             data.isGreen = true;
@@ -215,7 +240,7 @@ const levelGenerator = async (numberOfBalls) => {
 var balls;
 
 async function generateBalls() {
-    balls = await levelGenerator(levelConfig.ballCount);
+    balls = await levelGenerator(levelConfig.ballCount, levelConfig.difficulty);
 }
 
 generateBalls();
@@ -254,20 +279,20 @@ if (window.outerWidth < 760) {
 }
 
 function decrementScore() {
-    if (levelConfig.level != "1") {
-        --life;
-        if (life == 0) {
+    if (levelConfig.level != 1) {
+        life = life - 1;
+        if (life <= 0) {
             gameOver();
             return;
         }
         sc.innerText = life;
         streaks = 0;
         el.innerText = 0;
-    }  
+    }
 }
 
 function incrementScore() {
-    ++streaks;
+    streaks = streaks + 1;
     if (streaks >= levelConfig.target) {
         console.log("level completed");
         targetHit();
@@ -361,7 +386,6 @@ async function generateRandomPoints(
 }
 await generateRandomPoints(points, numberofGreenBalls, numberofRedBalls);
 
-
 testSupport([{ client: "Chrome" }]);
 function testSupport(supportedDevices) {
     const deviceDetector = new DeviceDetector();
@@ -433,11 +457,9 @@ function onResults(results) {
     var greenImg = new Image();
     greenImg.src = "./assets/green.svg";
 
-
     if (results.multiHandLandmarks && results.multiHandedness) {
         for (let index = 0; index < results.multiHandLandmarks.length; index++) {
-
-            // if 2 hands are detected for 3 seconds 
+            // if 2 hands are detected for 3 seconds
 
             if (results.multiHandLandmarks.length == 2) {
                 continousHandsDetected++;
@@ -447,7 +469,6 @@ function onResults(results) {
             } else {
                 continousHandsDetected = 0;
             }
-
 
             // find the middle point between wrist and middle finger
             const landmarks = results.multiHandLandmarks[index];
@@ -465,7 +486,7 @@ function onResults(results) {
                 0,
                 2 * Math.PI
             );
-            canvasCtx.fillStyle = "#FF0000";
+            canvasCtx.fillStyle = "#000000";
             canvasCtx.fill();
 
             canvasCtx.lineWidth = 5;
@@ -483,10 +504,13 @@ function onResults(results) {
                 Ballheight
             );
 
-
             // if the above drawn circle touches the ball then remove the ball
             if (results.multiHandLandmarks && results.multiHandedness) {
-                for (let index = 0; index < results.multiHandLandmarks.length; index++) {
+                for (
+                    let index = 0;
+                    index < results.multiHandLandmarks.length;
+                    index++
+                ) {
                     const landmarks = results.multiHandLandmarks[index];
                     const middlePoint = {
                         x: (landmarks[9].x + landmarks[0].x) / 2,
@@ -512,8 +536,6 @@ function onResults(results) {
             }
         });
     }
-
-
 }
 const hands = new mpHands.Hands(config);
 

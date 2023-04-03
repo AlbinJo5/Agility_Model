@@ -47,8 +47,19 @@
   </style>
 
   <div>
-    <h3 id="seconds-counter"> </h3>
-    <h4 id="score"> </h4>
+    <h5 class="streaks">Streaks:</h5>
+    <h3 class="streaksshow" id="seconds-counter"></h3>
+    <div class="life">
+      <svg viewBox="0 0 132.29 120.5" xmlns="http://www.w3.org/2000/svg">
+        <g transform="matrix(.43865 0 0 .43865 8.1199 -19.589)">
+          <path
+            d="m255.06 68.053a87.637 87.639 45 0 0-59.609-23.395 87.637 87.639 45 0 0-63.12 26.906l-0.0359-0.03594-0.0356 0.03558a87.637 87.639 45 0 0-63.119-26.905 87.637 87.639 45 0 0-87.639 87.639 87.637 87.639 45 0 0 26.905 63.119l-0.035992 0.036 123.92 123.92 123.93-123.93-8e-3 -8e-3a87.637 87.639 45 0 0 26.878-63.148 87.637 87.639 45 0 0-28.028-64.243z"
+            fill="#f00" stroke-width="4.7339" />
+        </g>
+      </svg>
+      Lives
+    </div>
+    <h4 id="score" class="lifeshow"></h4>
   </div>
 
   <div id="container" class="container">
@@ -60,12 +71,16 @@
     </div>
   </div>
 
-  <div id="gameOver" class="game-over" style="display: none;">
+  <div id="gameOver" class="game-over" style="display: none;background-color: black;">
     <h1>Game Over</h1>
+    <h6>You are demoted to previous Level</h6>
+    <button>Next</button>
   </div>
 
-  <div id="victory" class="victory" style="display: none;">
+  <div id="victory" class="victory" style="display: none;background-color: black;">
     <h1>Victory</h1>
+    <h6>You are promoted to next Level</h6>
+    <button>Continue</button>
   </div>
 
   <div style="display: none" class="control-panel"></div>
