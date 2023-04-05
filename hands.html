@@ -71,19 +71,32 @@
     </div>
   </div>
 
-  <div id="gameOver" class="game-over" style="display: none;background-color: black;">
-    <h1>Game Over</h1>
-    <h6>You are demoted to previous Level</h6>
-    <button>Next</button>
+  <div id="ready" style="display: flex; position: absolute; ">
+    <h3>Get</h3>
+    <h2>Set</h3>
+      <h1>Ready</h1>
   </div>
 
-  <div id="victory" class="victory" style="display: none;background-color: black;">
+  <div id="gameOver" class="game-over" style="display: none;">
+    <h1>Game Over</h1>
+    <h6>You are demoted to previous Level</h6>
+    <button>Go Back</button>
+  </div>
+
+  <div id="victory" class="victory" style="display: none;">
     <h1>Victory</h1>
     <h6>You are promoted to next Level</h6>
     <button>Continue</button>
   </div>
 
   <div style="display: none" class="control-panel"></div>
+  <audio id="myAudio" autoplay>
+    <source src="/assets/audio/audio.mp3" type="audio/mp3">
+  </audio>
+  <audio id="bellSound" src="/assets/audio/bell.mp3"></audio>
+  <audio id="wrongSound" src="/assets/audio/buzzer.mp3"></audio>
+  <audio id="gameOverSound" src="/assets/audio/gameOver.wav"></audio>
+  <audio id="gameWinSound" src="/assets/audio/gameWin.wav"></audio>
 </body>
 
 </html>

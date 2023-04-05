@@ -32,7 +32,7 @@ function getParam(paramName) {
 const levelMaster = [
     {
         target: 10,
-        ballCount: 3,
+        ballCount: 21,
         ballSpeed: 3000,
         toUpdateLives: 3,
         difficulty: 0.6,
@@ -115,7 +115,16 @@ var gameOverScreen = document.getElementById("gameOver");
 var victoryScreen = document.getElementById("victory");
 var container = document.getElementById("container");
 var sc = document.getElementById("score");
+var ready = document.getElementById("ready");
+var audio = document.getElementById('myAudio');
+var bellSound = document.getElementById('bellSound');
+var wrongSound = document.getElementById('wrongSound');
+var gameOverSound = document.getElementById('gameOverSound');
+var gameWinSound = document.getElementById('gameWinSound');
+var mainReady = true;
 
+ready.style.display = "none";
+audio.pause();
 // if level is 1 then show infinite lives
 // sc.innerText =  life;
 sc.innerText = levelConfig.level != "1" ? life : "∞";
@@ -127,7 +136,10 @@ console.log(levelConfig);
 
 const targetHit = async () => {
     // update firebase data
-
+    audio.pause();
+    setTimeout(() => {
+        gameWinSound.play();
+    }, 1000);
     const updatedLevelData = {
         level: levelConfig.level != 6 ? levelConfig.level + 1 : levelConfig.level,
         lives: levelConfig.level != 6 ? levelMaster[levelConfig.level].toUpdateLives + levelConfig.lives : levelConfig.lives,
@@ -138,7 +150,7 @@ const targetHit = async () => {
     container.style.display = "none";
     sc.style.display = "none";
     el.style.display = "none";
-    victoryScreen.style.display = "block";
+    victoryScreen.style.display = "flex";
 
     const userId = getParam("userId");
     //  set docs
@@ -148,7 +160,10 @@ const targetHit = async () => {
 
 const gameOver = async () => {
     // connect to firebase
-
+    audio.pause();
+    setTimeout(() => {
+        gameOverSound.play();
+    }, 1000);
     const updatedLevelData = {
         level: levelConfig.level - 1,
         lives: levelMaster[levelConfig.level].toUpdateLives,
@@ -159,7 +174,7 @@ const gameOver = async () => {
     container.style.display = "none";
     sc.style.display = "none";
     el.style.display = "none";
-    gameOverScreen.style.display = "block";
+    gameOverScreen.style.display = "flex";
 
     const userId = getParam("userId");
     //  set docs
@@ -177,30 +192,31 @@ const gameOver = async () => {
 // possible combinations
 
 const levelPoints = [
-    { x: 125, y: 200 },
-    { x: 125, y: 300 },
-    { x: 125, y: 400 },
-    { x: 125, y: 500 },
-    { x: 125, y: 600 },
-    { x: 125, y: 700 },
-    { x: 125, y: 800 },
-    { x: 980, y: 200 },
-    { x: 980, y: 300 },
-    { x: 980, y: 400 },
-    { x: 980, y: 500 },
-    { x: 980, y: 600 },
-    { x: 980, y: 700 },
-    { x: 980, y: 800 },
-    { x: 150, y: 100 },
-    { x: 300, y: 100 },
-    { x: 450, y: 100 },
-    { x: 600, y: 100 },
-    { x: 750, y: 100 },
-    { x: 150, y: 900 },
-    { x: 300, y: 900 },
-    { x: 450, y: 900 },
-    { x: 600, y: 900 },
-    { x: 750, y: 900 },
+    { x: 125, y: 250 },
+    { x: 125, y: 350 },
+    { x: 125, y: 450 },
+    { x: 125, y: 550 },
+    { x: 125, y: 650 },
+    { x: 125, y: 750 },
+
+    { x: 980, y: 250 },
+    { x: 980, y: 350 },
+    { x: 980, y: 450 },
+    { x: 980, y: 550 },
+    { x: 980, y: 650 },
+    { x: 980, y: 750 },
+
+    { x: 150, y: 150 },
+    { x: 300, y: 150 },
+    { x: 450, y: 150 },
+    { x: 600, y: 150 },
+    { x: 750, y: 150 },
+
+    { x: 150, y: 850 },
+    { x: 300, y: 850 },
+    { x: 450, y: 850 },
+    { x: 600, y: 850 },
+    { x: 750, y: 850 },
 ];
 
 // level generator
@@ -439,6 +455,8 @@ var continousHandsDetected = 0;
 function onResults(results) {
     // Hide the spinner.
     document.body.classList.add("loaded");
+    audio.play();
+
     // Update the frame rate.
     fpsControl.tick();
     // Draw the overlays.
@@ -465,6 +483,8 @@ function onResults(results) {
                 continousHandsDetected++;
                 if (continousHandsDetected > 100) {
                     handsDetected = true;
+                    mainReady = false;
+                    ready.style.display = "none";
                 }
             } else {
                 continousHandsDetected = 0;
@@ -525,8 +545,10 @@ function onResults(results) {
                         ) < 50
                     ) {
                         if (point.isGreen) {
+                            bellSound.play();
                             incrementScore();
                         } else {
+                            wrongSound.play();
                             decrementScore();
                         }
                         balls.splice(balls.indexOf(point), 1);
@@ -543,6 +565,9 @@ const hands = new mpHands.Hands(config);
 // hands.onResults(onResults);
 hands.onResults((results) => {
     if (!isCompleted) {
+        if (mainReady) {
+            ready.style.display = "flex";
+        }
         onResults(results);
     }
 });
