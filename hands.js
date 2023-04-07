@@ -32,45 +32,52 @@ function getParam(paramName) {
 const levelMaster = [
   {
     target: 10,
-    ballCount: 3,
+    ballCount: 21,
     ballSpeed: 3000,
     toUpdateLives: 3,
+    difficulty: 0.6,
   },
   {
     target: 10,
     ballCount: 4,
     ballSpeed: 2500,
     toUpdateLives: 3,
+    difficulty: 0.55,
   },
   {
     target: 10,
     ballCount: 5,
     ballSpeed: 2000,
     toUpdateLives: 5,
+    difficulty: 0.5,
   },
   {
     target: 10,
     ballCount: 5,
     ballSpeed: 2000,
     toUpdateLives: 5,
+    difficulty: 0.45,
   },
   {
     target: 10,
     ballCount: 5,
     ballSpeed: 2000,
     toUpdateLives: 5,
+    difficulty: 0.4,
   },
   {
     target: 10,
     ballCount: 5,
     ballSpeed: 2000,
     toUpdateLives: 5,
+    difficulty: 0.35,
   },
   {
     target: 10,
     ballCount: 5,
     ballSpeed: 2000,
     toUpdateLives: 5,
+    difficulty: 0.35,
   },
 ];
 
@@ -96,6 +103,7 @@ var levelConfig = {
   ballSpeed: levelMaster[levelData.level - 1].ballSpeed,
   lives: levelData.lives,
   selectedBallType: levelData.selectedBallType,
+  difficulty: levelMaster[levelData.level - 1].difficulty,
 };
 
 var streaks = 0;
@@ -107,7 +115,16 @@ var gameOverScreen = document.getElementById("gameOver");
 var victoryScreen = document.getElementById("victory");
 var container = document.getElementById("container");
 var sc = document.getElementById("score");
+var ready = document.getElementById("ready");
+var audio = document.getElementById("myAudio");
+var bellSound = document.getElementById("bellSound");
+var wrongSound = document.getElementById("wrongSound");
+var gameOverSound = document.getElementById("gameOverSound");
+var gameWinSound = document.getElementById("gameWinSound");
+var mainReady = true;
 
+ready.style.display = "none";
+audio.pause();
 // if level is 1 then show infinite lives
 // sc.innerText =  life;
 sc.innerText = levelConfig.level != "1" ? life : "∞";
@@ -115,14 +132,18 @@ el.innerText = streaks;
 
 var isCompleted = false;
 
-console.log(levelConfig);
-
 const targetHit = async () => {
   // update firebase data
-
+  audio.pause();
+  setTimeout(() => {
+    gameWinSound.play();
+  }, 1000);
   const updatedLevelData = {
-    level: levelConfig.level + 1,
-    lives: levelMaster[levelConfig.level].toUpdateLives,
+    level: levelConfig.level != 6 ? levelConfig.level + 1 : levelConfig.level,
+    lives:
+      levelConfig.level != 6
+        ? levelMaster[levelConfig.level].toUpdateLives + levelConfig.lives
+        : levelConfig.lives,
   };
 
   isCompleted = true;
@@ -130,7 +151,7 @@ const targetHit = async () => {
   container.style.display = "none";
   sc.style.display = "none";
   el.style.display = "none";
-  victoryScreen.style.display = "block";
+  victoryScreen.style.display = "flex";
 
   const userId = getParam("userId");
   //  set docs
@@ -140,7 +161,10 @@ const targetHit = async () => {
 
 const gameOver = async () => {
   // connect to firebase
-
+  audio.pause();
+  setTimeout(() => {
+    gameOverSound.play();
+  }, 1000);
   const updatedLevelData = {
     level: levelConfig.level - 1,
     lives: levelMaster[levelConfig.level].toUpdateLives,
@@ -151,7 +175,7 @@ const gameOver = async () => {
   container.style.display = "none";
   sc.style.display = "none";
   el.style.display = "none";
-  gameOverScreen.style.display = "block";
+  gameOverScreen.style.display = "flex";
 
   const userId = getParam("userId");
   //  set docs
@@ -169,34 +193,35 @@ const gameOver = async () => {
 // possible combinations
 
 const levelPoints = [
-  { x: 125, y: 200 },
-  { x: 125, y: 300 },
-  { x: 125, y: 400 },
-  { x: 125, y: 500 },
-  { x: 125, y: 600 },
-  { x: 125, y: 700 },
-  { x: 125, y: 800 },
-  { x: 980, y: 200 },
-  { x: 980, y: 300 },
-  { x: 980, y: 400 },
-  { x: 980, y: 500 },
-  { x: 980, y: 600 },
-  { x: 980, y: 700 },
-  { x: 980, y: 800 },
-  { x: 150, y: 100 },
-  { x: 300, y: 100 },
-  { x: 450, y: 100 },
-  { x: 600, y: 100 },
-  { x: 750, y: 100 },
-  { x: 150, y: 900 },
-  { x: 300, y: 900 },
-  { x: 450, y: 900 },
-  { x: 600, y: 900 },
-  { x: 750, y: 900 },
+  { x: 125, y: 250 },
+  { x: 125, y: 350 },
+  { x: 125, y: 450 },
+  { x: 125, y: 550 },
+  { x: 125, y: 650 },
+  { x: 125, y: 750 },
+
+  { x: 980, y: 250 },
+  { x: 980, y: 350 },
+  { x: 980, y: 450 },
+  { x: 980, y: 550 },
+  { x: 980, y: 650 },
+  { x: 980, y: 750 },
+
+  { x: 150, y: 150 },
+  { x: 300, y: 150 },
+  { x: 450, y: 150 },
+  { x: 600, y: 150 },
+  { x: 750, y: 150 },
+
+  { x: 150, y: 850 },
+  { x: 300, y: 850 },
+  { x: 450, y: 850 },
+  { x: 600, y: 850 },
+  { x: 750, y: 850 },
 ];
 
 // level generator
-const levelGenerator = async (numberOfBalls) => {
+const levelGenerator = async (numberOfBalls, difficulty) => {
   var output = [];
   // randomly put leftside or rightside or topside or bottomside
   for (var i = 0; i < numberOfBalls; i++) {
@@ -215,12 +240,10 @@ const levelGenerator = async (numberOfBalls) => {
     }
 
     //  random true or false
-    var randomBoolean = Math.random() >= 0.5;
+    var randomBoolean = Math.random() <= difficulty;
     if (randomBoolean) {
-      console.log("green");
       data.isGreen = true;
     } else {
-      console.log("red");
       data.isGreen = false;
     }
 
@@ -232,7 +255,7 @@ const levelGenerator = async (numberOfBalls) => {
 var balls;
 
 async function generateBalls() {
-  balls = await levelGenerator(levelConfig.ballCount);
+  balls = await levelGenerator(levelConfig.ballCount, levelConfig.difficulty);
 }
 
 generateBalls();
@@ -254,20 +277,15 @@ var decreaseY = 0;
 
 // if screen is tablet or mobile then change the ball size
 if (window.outerWidth < 760) {
-  console.log(window.outerWidth);
   Ballwidth = 100;
   Ballheight = 50;
   decreaseX = 50;
   decreaseY = 25;
-
-  console.log("mobile");
 } else {
-  console.log(window.innerWidth);
   Ballwidth = 100;
   Ballheight = 80;
   decreaseX = 50;
   decreaseY = 40;
-  console.log("tab");
 }
 
 function decrementScore() {
@@ -286,24 +304,11 @@ function decrementScore() {
 function incrementScore() {
   streaks = streaks + 1;
   if (streaks >= levelConfig.target) {
-    console.log("level completed");
     targetHit();
     return;
   }
   el.innerText = streaks;
 }
-
-function incrementSeconds() {
-  if (seconds == 0) {
-    clearInterval(cancel);
-    alert("Time's up!");
-    return;
-  }
-  seconds -= 1;
-  el.innerText = seconds;
-}
-
-var cancel = setInterval(incrementSeconds, 1000);
 
 const acpectRatio = 0.75;
 var gridWidth = 0;
@@ -421,7 +426,6 @@ const fpsControl = new controls.FPS();
 // Optimization: Turn off animated spinner after its hiding animation is done.
 const spinner = document.querySelector(".loading");
 spinner.ontransitionend = () => {
-  console.log("spinner transition end");
   spinner.style.display = "none";
 };
 
@@ -431,6 +435,8 @@ var continousHandsDetected = 0;
 function onResults(results) {
   // Hide the spinner.
   document.body.classList.add("loaded");
+  audio.play();
+
   // Update the frame rate.
   fpsControl.tick();
   // Draw the overlays.
@@ -457,6 +463,8 @@ function onResults(results) {
         continousHandsDetected++;
         if (continousHandsDetected > 100) {
           handsDetected = true;
+          mainReady = false;
+          ready.style.display = "none";
         }
       } else {
         continousHandsDetected = 0;
@@ -478,7 +486,7 @@ function onResults(results) {
         0,
         2 * Math.PI
       );
-      canvasCtx.fillStyle = "#FF0000";
+      canvasCtx.fillStyle = "#000000";
       canvasCtx.fill();
 
       canvasCtx.lineWidth = 5;
@@ -517,8 +525,10 @@ function onResults(results) {
             ) < 50
           ) {
             if (point.isGreen) {
+              bellSound.play();
               incrementScore();
             } else {
+              wrongSound.play();
               decrementScore();
             }
             balls.splice(balls.indexOf(point), 1);
@@ -535,6 +545,9 @@ const hands = new mpHands.Hands(config);
 // hands.onResults(onResults);
 hands.onResults((results) => {
   if (!isCompleted) {
+    if (mainReady) {
+      ready.style.display = "flex";
+    }
     onResults(results);
   }
 });
@@ -543,8 +556,8 @@ new controls.ControlPanel(controlsElement, {
   selfieMode: true,
   maxNumHands: 2,
   modelComplexity: 1,
-  minDetectionConfidence: 0.9,
-  minTrackingConfidence: 0.5,
+  minDetectionConfidence: 0.1,
+  minTrackingConfidence: 0.1,
 })
   .add([
     new controls.StaticText({ title: "MediaPipe Hands" }),

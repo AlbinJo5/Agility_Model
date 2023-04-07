@@ -119,21 +119,45 @@ body {
   opacity: 0;
 }
 
-h3 {
+.streaksshow {
   position: absolute;
-  font-size: 70px;
+  font-size: 90px;
   letter-spacing: 0.5vw;
   margin: 1vw;
   z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 150px;
+  height: 200px;
   text-align: center;
-  width: 150px;
-
+  width: 200px;
   top: 5px;
   border-radius: 50%;
+  color: black;
+  z-index: 100;
+
+  right: 5px;
+  background-color: #abff2e;
+  border-radius: inset(0% 45% 0% 45% round 100px);
+}
+
+.streaks {
+  position: absolute;
+  font-size: 40px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
+  z-index: 100;
+  display: flex;
+  padding-left: 10px;
+  align-items: center;
+  height: 60px;
+  color: black;
+
+  text-align: center;
+  width: 320px;
+  border-radius: 0.5rem;
+
+  top: 5px;
   /* clip-path: polygon(
     50% 0%,
     80% 10%,
@@ -144,24 +168,50 @@ h3 {
     20% 90%,
     0% 70%,
     0% 35%,
+    
     20% 10%
-  ); */
-  right: 5px;
+    ); */
+  color: black;
+  right: 75px;
   background-color: #abff2e;
   border-radius: inset(0% 45% 0% 45% round 100px);
 }
 
-h5 {
+
+.lifeshow {
   position: absolute;
-  font-size: 30px;
+  font-size: 90px;
   letter-spacing: 0.5vw;
   margin: 1vw;
   z-index: 100;
   display: flex;
-  padding-left: 10px;
+  justify-content: center;
   align-items: center;
-  height: 50px;
+  height: 200px;
   text-align: center;
+  width: 200px;
+  top: 5px;
+  border-radius: 50%;
+  color: black;
+  z-index: 100;
+
+  left: 5px;
+  background-color: #abff2e;
+  border-radius: inset(0% 45% 0% 45% round 100px);
+}
+
+.life {
+  position: absolute;
+  font-size: 40px;
+  letter-spacing: 0.5vw;
+  margin: 1vw;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  color: black;
+  height: 60px;
+  padding-left: 110px;
+  padding-right: 10px;
   width: 220px;
   border-radius: 0.5rem;
 
@@ -178,29 +228,12 @@ h5 {
     0% 35%,
     20% 10%
   ); */
-  right: 75px;
+  left: 75px;
   background-color: #abff2e;
   border-radius: inset(0% 45% 0% 45% round 100px);
 }
 
-.life {
-  z-index: 100;
-  position: absolute;
-  display: flex;
-  /* justify-content: center; */
-  align-items: center;
-  height: 80px;
-  width: 100px;
-  top: 5px;
-  left: 5px;
-  clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%, 0% 50%);
-  /* outline: #abff2e solid 5px; */
-  background-color: #abff2e;
-  font-size: 50px;
-  letter-spacing: 2px;
-  margin: 10px;
-  border-radius: 5px;
-}
+
 
 .life svg {
   height: 40px;
@@ -212,14 +245,58 @@ h5 {
   position: relative;
   flex-direction: column;
   display: flex;
+  background-image: linear-gradient(0deg, #c8ee8f 0%, #cff891 74%);
   justify-content: center;
   align-items: center;
   height: 100%;
   width: 100%;
-  font-size: 20px;
+  font-size: 50px;
+  color: black;
   letter-spacing: 2px;
   margin: 10px;
   border-radius: 5px;
+  z-index: 10000;
+
+
+
+}
+
+#ready {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  letter-spacing: 2px;
+  margin: 10px;
+  background-image: linear-gradient(0deg, #c8ee8f98 0%, #cff89142 74%);
+  border-radius: 5px;
+  color: black;
+
+}
+
+.game-over {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  letter-spacing: 2px;
+  margin: 10px;
+  background-image: linear-gradient(0deg, #fa6565 0%, #c23535 74%);
+
+  border-radius: 5px;
+}
+
+.game-over button {
+  clip-path: polygon(40% 0%, 40% 20%, 100% 20%, 100% 80%, 40% 80%, 40% 100%, 0% 50%);
 }
 
 .victory h3 {
@@ -227,21 +304,24 @@ h5 {
   display: block;
 }
 
+h6 {
+  font-size: 40px;
+
+}
+
 button {
-  padding: 2.5rem 2rem;
-  padding-right: 3rem;
+  padding: 5.5rem 10rem;
+  padding-right: 10rem;
   border-radius: 0.5rem;
-  font-size: 20px;
+  font-size: 50px;
   background: #abff2e;
   color: white;
   border: solid 0.1rem #abff2e;
-  clip-path: polygon(
-    0% 20%,
-    60% 20%,
-    60% 0%,
-    100% 50%,
-    60% 100%,
-    60% 80%,
-    0% 80%
-  );
+  clip-path: polygon(0% 20%,
+      60% 20%,
+      60% 0%,
+      100% 50%,
+      60% 100%,
+      60% 80%,
+      0% 80%);
 }
