@@ -38,7 +38,7 @@ const levelMaster = [
         difficulty: 0.6,
     },
     {
-        target: 10,
+        target: 50,
         ballCount: 4,
         ballSpeed: 2500,
         toUpdateLives: 3,
@@ -575,8 +575,8 @@ hands.onResults((results) => {
 new controls.ControlPanel(controlsElement, {
     selfieMode: true,
     maxNumHands: 2,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.9,
+    modelComplexity: 0,
+    minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
 })
     .add([
