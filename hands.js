@@ -81,14 +81,14 @@ const levelMaster = [
   },
   {
     target: 80,
-    ballCount: 5,
+    ballCount: 9,
     ballSpeed: 3500,
     toUpdateLives: 1,
     difficulty: 0.35,
   },
   {
     target: 90,
-    ballCount: 5,
+    ballCount: 10,
     ballSpeed: 3500,
     toUpdateLives: 1,
     difficulty: 0.3,
@@ -142,10 +142,16 @@ var bellSound = document.getElementById("bellSound");
 var wrongSound = document.getElementById("wrongSound");
 var gameOverSound = document.getElementById("gameOverSound");
 var gameWinSound = document.getElementById("gameWinSound");
+var audioCanvas = document.getElementById("audioCanvas");
 var mainReady = true;
 
 ready.style.display = "none";
-audio.pause();
+
+// on click audio cnavans aduio play
+audioCanvas.addEventListener("click", () => {
+  audio.play();
+});
+
 // if level is 1 then show infinite lives
 // sc.innerText =  life;
 sc.innerText = levelConfig.level != "1" ? life : "∞";
