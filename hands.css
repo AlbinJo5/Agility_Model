@@ -306,7 +306,7 @@ h6 {
   font-weight: bold;
   font-size: 75px;
   padding: 10px 50px 10px 50px;
-  background-color: lightgray;
+  background-color: rgb(211, 211, 211);
   text-shadow: -1px -1px black, 1px 1px white;
   color: gray;
   -webkit-border-radius: 20px;
