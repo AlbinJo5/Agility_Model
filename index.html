@@ -47,7 +47,7 @@
         }
     </style>
 
-    <div>
+    <div id="space">
         <h5 class="streaks">Streaks:</h5>
         <h3 class="streaksshow" id="seconds-counter"></h3>
         <div class="life">
@@ -65,7 +65,7 @@
 
     <div id="container" class="container">
         <video class="input_video"></video>
-        <canvas class="output_canvas" width="1080" height="1080" style="height: 100vh; width: 100%"></canvas>
+        <canvas class="output_canvas" width="1080" height="1080" style="height: 100vh; width: 100%;object-fit: cover;"></canvas>
         <div class="loading">
             <div class="spinner"></div>
             <div class="message">Loading</div>
@@ -81,7 +81,7 @@
     <div id="gameOver" class="game-over" style="display: none;">
         <h1>Game Over</h1>
         <h6>You are demoted to previous Level</h6>
-        <button>Go Back</button>
+        <button  style="background-color: black;">Go Back</button>
     </div>
 
     <div id="victory" class="victory" style="display: none;">
@@ -90,9 +90,9 @@
         <button>Continue</button>
     </div>
 
-    <div style="display: none" class="control-panel"></div>
-    <audio id="myAudio" autoplay>
-        <source src="/assets/audio/audio.mp3" type="audio/mp3">
+    <div class="control-panel" style="display: none;"></div>
+    <audio id="myAudio">
+        <source src="" type="audio/mp3">
     </audio>
     <audio id="bellSound" src="/assets/audio/bell.mp3"></audio>
     <audio id="wrongSound" src="/assets/audio/buzzer.mp3"></audio>
