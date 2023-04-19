@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body id="audioCanvas">
     <style>
         .square-box {
             width: 33%;
@@ -47,7 +47,7 @@
         }
     </style>
 
-    <div id="space">
+    <div >
         <h5 class="streaks">Streaks:</h5>
         <h3 class="streaksshow" id="seconds-counter"></h3>
         <div class="life">
@@ -65,7 +65,7 @@
 
     <div id="container" class="container">
         <video class="input_video"></video>
-        <canvas class="output_canvas" width="1080" height="1080" style="height: 100vh; width: 100%;object-fit: cover;"></canvas>
+        <canvas class="output_canvas" width="1080" height="1080" style="height: 100vh; width: 100%;"></canvas>
         <div class="loading">
             <div class="spinner"></div>
             <div class="message">Loading</div>
