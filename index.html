@@ -106,15 +106,29 @@
     </div>
 
     <div id="gameOver" class="game-over" style="display: none">
-      <h1>Game Over</h1>
-      <h6>You are demoted to previous Level</h6>
-      <button style="background-color: black">Go Back</button>
+      <img src="/assets/gameover.gif" width="900" alt="" />
+      <h6 style="font-weight: 300">You are demoted to previous Level</h6>
+      <button class="video-game-button">Go Back</button>
     </div>
 
-    <div id="victory" class="victory" style="display: none">
+    <div id="victory" class="victory" style="display: flex">
+      <img
+        src="/assets/popper.gif"
+        style="
+          position: absolute;
+          height: 100vh;
+          object-fit: cover;
+          opacity: 0.3;
+        "
+        alt=""
+      />
+      <img src="/assets/victory.png" width="300" alt="" />
+
       <h1>Victory</h1>
-      <h6>You are promoted to next Level</h6>
-      <button>Continue</button>
+      <h6 style="margin-top: 0; font-weight: 300">
+        You are promoted to next Level
+      </h6>
+      <button class="video-game-button" style="z-index: 20">Continue</button>
     </div>
 
     <div class="control-panel" style="display: none"></div>
