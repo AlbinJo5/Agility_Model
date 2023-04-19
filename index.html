@@ -5,101 +5,127 @@
 
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <link rel="icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.3/control_utils_3d.css"
-        crossorigin="anonymous" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6/control_utils.css" crossorigin="anonymous" />
-    <link rel="stylesheet" type="text/css" href="hands.css" crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6/control_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.3/control_utils_3d.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js" crossorigin="anonymous"></script>
-</head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.3/control_utils_3d.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6/control_utils.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="hands.css"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.3/control_utils_3d.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<body id="audioCanvas">
+  <body id="audioCanvas">
     <style>
-        .square-box {
-            width: 33%;
-            height: 0;
-            padding-top: 33%;
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
+      .square-box {
+        width: 33%;
+        height: 0;
+        padding-top: 33%;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
 
-        .landmark-grid-container {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #99999999;
-        }
+      .landmark-grid-container {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #99999999;
+      }
     </style>
 
-    <div >
-        <h5 class="streaks">Streaks:</h5>
-        <h3 class="streaksshow" id="seconds-counter"></h3>
-        <div class="life">
-            <svg viewBox="0 0 132.29 120.5" xmlns="http://www.w3.org/2000/svg">
-                <g transform="matrix(.43865 0 0 .43865 8.1199 -19.589)">
-                    <path
-                        d="m255.06 68.053a87.637 87.639 45 0 0-59.609-23.395 87.637 87.639 45 0 0-63.12 26.906l-0.0359-0.03594-0.0356 0.03558a87.637 87.639 45 0 0-63.119-26.905 87.637 87.639 45 0 0-87.639 87.639 87.637 87.639 45 0 0 26.905 63.119l-0.035992 0.036 123.92 123.92 123.93-123.93-8e-3 -8e-3a87.637 87.639 45 0 0 26.878-63.148 87.637 87.639 45 0 0-28.028-64.243z"
-                        fill="#f00" stroke-width="4.7339" />
-                </g>
-            </svg>
-            Lives
-        </div>
-        <h4 id="score" class="lifeshow"></h4>
+    <div>
+      <h5 class="streaks">Streaks:</h5>
+      <h3 class="streaksshow" id="seconds-counter"></h3>
+      <div class="life">
+        <svg viewBox="0 0 132.29 120.5" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(.43865 0 0 .43865 8.1199 -19.589)">
+            <path
+              d="m255.06 68.053a87.637 87.639 45 0 0-59.609-23.395 87.637 87.639 45 0 0-63.12 26.906l-0.0359-0.03594-0.0356 0.03558a87.637 87.639 45 0 0-63.119-26.905 87.637 87.639 45 0 0-87.639 87.639 87.637 87.639 45 0 0 26.905 63.119l-0.035992 0.036 123.92 123.92 123.93-123.93-8e-3 -8e-3a87.637 87.639 45 0 0 26.878-63.148 87.637 87.639 45 0 0-28.028-64.243z"
+              fill="#f00"
+              stroke-width="4.7339"
+            />
+          </g>
+        </svg>
+        Lives
+      </div>
+      <h4 id="score" class="lifeshow"></h4>
     </div>
 
     <div id="container" class="container">
-        <video class="input_video"></video>
-        <canvas class="output_canvas" width="1080" height="1080" style="height: 100vh; width: 100%;"></canvas>
-        <div class="loading">
-            <div class="spinner"></div>
-            <div class="message">Loading</div>
-        </div>
+      <video class="input_video"></video>
+      <canvas
+        class="output_canvas"
+        width="1080"
+        height="1080"
+        style="height: 100vh; width: 100%"
+      ></canvas>
+      <div class="loading">
+        <div class="spinner"></div>
+        <div class="message">Loading</div>
+      </div>
     </div>
 
-    <div id="ready" style="display: none; position: absolute; ">
-        <h3>Get</h3>
-        <h2>Set</h3>
-            <h1>Ready</h1>
+    <div id="ready" style="display: none; position: absolute">
+      <h1 id="readyText" style="opacity: 0.8">Tap</h1>
     </div>
 
-    <div id="gameOver" class="game-over" style="display: none;">
-        <h1>Game Over</h1>
-        <h6>You are demoted to previous Level</h6>
-        <button  style="background-color: black;">Go Back</button>
+    <div id="gameOver" class="game-over" style="display: none">
+      <h1>Game Over</h1>
+      <h6>You are demoted to previous Level</h6>
+      <button style="background-color: black">Go Back</button>
     </div>
 
-    <div id="victory" class="victory" style="display: none;">
-        <h1>Victory</h1>
-        <h6>You are promoted to next Level</h6>
-        <button>Continue</button>
+    <div id="victory" class="victory" style="display: none">
+      <h1>Victory</h1>
+      <h6>You are promoted to next Level</h6>
+      <button>Continue</button>
     </div>
 
-    <div class="control-panel" style="display: none;"></div>
+    <div class="control-panel" style="display: none"></div>
     <audio id="myAudio">
-        <source src="" type="audio/mp3">
+      <source src="" type="audio/mp3" />
     </audio>
     <audio id="bellSound" src="/assets/audio/bell.mp3"></audio>
     <audio id="wrongSound" src="/assets/audio/buzzer.mp3"></audio>
     <audio id="gameOverSound" src="/assets/audio/gameOver.wav"></audio>
     <audio id="gameWinSound" src="/assets/audio/gameWin.wav"></audio>
-</body>
-
+  </body>
 </html>
 
 <script type="module" src="scripts/ballSpwaning.js"></script>

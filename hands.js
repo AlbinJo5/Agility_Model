@@ -153,6 +153,7 @@ var wrongSound = document.getElementById("wrongSound");
 var gameOverSound = document.getElementById("gameOverSound");
 var gameWinSound = document.getElementById("gameWinSound");
 var audioCanvas = document.getElementById("audioCanvas");
+var readyText = document.getElementById("readyText");
 var mainReady = true;
 
 ready.style.display = "none";
@@ -167,6 +168,7 @@ soundEffect.loop = true;
 // soundEffect.pause();
 audioCanvas.addEventListener("click", () => {
   soundEffect.play();
+  readyText.innerText = "Hands";
   //   soundEffect.play();
 });
 
@@ -502,16 +504,27 @@ function onResults(results) {
   if (results.multiHandLandmarks && results.multiHandedness) {
     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
       // if 2 hands are detected for 3 seconds
-
-      if (results.multiHandLandmarks.length == 2) {
-        continousHandsDetected++;
-        if (continousHandsDetected > 100) {
-          handsDetected = true;
-          mainReady = false;
-          ready.style.display = "none";
+      if (readyText.innerText != "Tap") {
+        if (results.multiHandLandmarks.length == 2) {
+          continousHandsDetected++;
+          if (continousHandsDetected == 5) {
+            readyText.innerText = "Get";
+          }
+          if (continousHandsDetected == 40) {
+            readyText.innerText = "Set";
+          }
+          if (continousHandsDetected == 70) {
+            readyText.innerText = "G000";
+          }
+          if (continousHandsDetected > 100) {
+            handsDetected = true;
+            mainReady = false;
+            ready.style.display = "none";
+          }
+        } else {
+          continousHandsDetected = 0;
+          readyText.innerText = "Hands?";
         }
-      } else {
-        continousHandsDetected = 0;
       }
 
       // find the middle point between wrist and middle finger
