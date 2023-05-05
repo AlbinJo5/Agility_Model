@@ -219,11 +219,15 @@ const targetHit = async () => {
   //  set docs
   const docRef = doc(db, "Users", userId, "Agility", "normal");
   await setDoc(docRef, updatedLevelData, { merge: true });
-  await setDoc(doc(db, "Leaderboard", userId), {
-    normalCurrentLevel: levelConfig.level + 1,
-    normalPrevLevel: levelConfig.level,
-    normalWin: leaderboardData.normalWin + 1,
-  });
+  await setDoc(
+    doc(db, "Leaderboard", userId),
+    {
+      normalCurrentLevel: levelConfig.level + 1,
+      normalPrevLevel: levelConfig.level,
+      normalWin: leaderboardData.normalWin + 1,
+    },
+    { merge: true }
+  );
 };
 
 const gameOver = async () => {
