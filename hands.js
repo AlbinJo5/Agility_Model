@@ -125,7 +125,22 @@ async function getAgilityData() {
   }
 }
 
+async function getLeaderboadData() {
+  const userId = getParam("userId");
+  // get document from Users collection / userId / Agility / documentId
+  const docRef = doc(db, "Leaderboard", userId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists) {
+    return docSnap.data();
+  } else {
+    // doc.data() will be undefined in this case
+    alert("No such document!");
+  }
+}
+
 const levelData = await getAgilityData();
+
+const leaderboardData = await getLeaderboadData();
 
 var levelConfig = {
   level: levelData.level,
@@ -186,9 +201,9 @@ const targetHit = async () => {
     gameWinSound.play();
   }, 1000);
   const updatedLevelData = {
-    level: levelConfig.level != 6 ? levelConfig.level + 1 : levelConfig.level,
+    level: levelConfig.level != 10 ? levelConfig.level + 1 : levelConfig.level,
     lives:
-      levelConfig.level != 6
+      levelConfig.level != 10
         ? levelMaster[levelConfig.level].toUpdateLives + levelConfig.lives
         : levelConfig.lives,
   };
@@ -204,6 +219,11 @@ const targetHit = async () => {
   //  set docs
   const docRef = doc(db, "Users", userId, "Agility", "normal");
   await setDoc(docRef, updatedLevelData, { merge: true });
+  await setDoc(doc(db, "Leaderboard", userId), {
+    normalCurrentLevel: levelConfig.level + 1,
+    normalPrevLevel: levelConfig.level,
+    normalWin: leaderboardData.normalWin + 1,
+  });
 };
 
 const gameOver = async () => {
@@ -229,6 +249,15 @@ const gameOver = async () => {
 
   const docRef = doc(db, "Users", userId, "Agility", "normal");
   await setDoc(docRef, updatedLevelData, { merge: true });
+  await setDoc(
+    doc(db, "Leaderboard", userId),
+    {
+      normalCurrentLevel: levelConfig.level - 1,
+      normalPrevLevel: levelConfig.level,
+      normalLose: leaderboardData.normalLose + 1,
+    },
+    { merge: true }
+  );
 };
 
 // level master
