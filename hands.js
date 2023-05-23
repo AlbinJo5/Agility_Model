@@ -154,7 +154,7 @@ var levelConfig = {
 
 var streaks = 0;
 var redImg = new Image();
-redImg.src = "./assets/red.svg";
+redImg.src = "./assets/red.png";
 
 var greenImg = new Image();
 greenImg.src = `./assets/balls/${levelConfig.selectedBallType}.svg`;
@@ -534,7 +534,6 @@ function onResults(results) {
     canvasElement.height
   );
 
-
   if (results.multiHandLandmarks && results.multiHandedness) {
     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
       // if 2 hands are detected for 3 seconds
@@ -612,7 +611,7 @@ function onResults(results) {
           if (
             Math.sqrt(
               Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
-              Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
+                Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
             ) < 50
           ) {
             if (point.isGreen) {
