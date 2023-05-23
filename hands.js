@@ -112,6 +112,11 @@ const levelMaster = [
   },
 ];
 
+// Go back to flutter Function
+document.getElementById("backButton").addEventListener("click", function () {
+  window.postMessage("goBackToFlutterApp");
+});
+
 async function getAgilityData() {
   const userId = getParam("userId");
   // get document from Users collection / userId / Agility / documentId
