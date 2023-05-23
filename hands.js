@@ -153,6 +153,11 @@ var levelConfig = {
 };
 
 var streaks = 0;
+var redImg = new Image();
+redImg.src = "./assets/red.svg";
+
+var greenImg = new Image();
+greenImg.src = `./assets/balls/${levelConfig.selectedBallType}.svg`;
 // var score = 1000;
 var life = levelConfig.lives;
 var el = document.getElementById("seconds-counter");
@@ -528,11 +533,7 @@ function onResults(results) {
     canvasElement.width,
     canvasElement.height
   );
-  var redImg = new Image();
-  redImg.src = "./assets/red.svg";
 
-  var greenImg = new Image();
-  greenImg.src = "./assets/green.svg";
 
   if (results.multiHandLandmarks && results.multiHandedness) {
     for (let index = 0; index < results.multiHandLandmarks.length; index++) {
@@ -544,10 +545,10 @@ function onResults(results) {
             readyText.innerText = "Get";
           }
           if (continousHandsDetected == 40) {
-            readyText.innerText = "Set";
+            readyText.innerText = "Palms";
           }
           if (continousHandsDetected == 70) {
-            readyText.innerText = "G000";
+            readyText.innerText = "Ready";
           }
           if (continousHandsDetected > 100) {
             handsDetected = true;
@@ -611,7 +612,7 @@ function onResults(results) {
           if (
             Math.sqrt(
               Math.pow(point.x - middlePoint.x * canvasElement.width, 2) +
-                Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
+              Math.pow(point.y - middlePoint.y * canvasElement.height, 2)
             ) < 50
           ) {
             if (point.isGreen) {
