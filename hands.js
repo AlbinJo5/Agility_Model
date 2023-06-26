@@ -193,8 +193,8 @@ soundEffect.loop = true;
 // soundEffect.pause();
 audioCanvas.addEventListener("click", () => {
   soundEffect.play();
-  readyText.innerText = "🙌";
   readyText.style.fontSize = "4em";
+  readyText.innerText = "🙌";
   //   soundEffect.play();
 });
 
@@ -547,12 +547,15 @@ function onResults(results) {
         if (results.multiHandLandmarks.length == 2) {
           continousHandsDetected++;
           if (continousHandsDetected == 5) {
+            readyText.style.fontSize = "2em";
             readyText.innerText = "Get";
           }
           if (continousHandsDetected == 40) {
+            readyText.style.fontSize = "2em";
             readyText.innerText = "Palms";
           }
           if (continousHandsDetected == 70) {
+            readyText.style.fontSize = "2em";
             readyText.innerText = "Ready";
           }
           if (continousHandsDetected > 100) {
@@ -562,8 +565,8 @@ function onResults(results) {
           }
         } else {
           continousHandsDetected = 0;
-          readyText.innerText = "🙌";
           readyText.style.fontSize = "4em";
+          readyText.innerText = "🙌";
         }
       }
 
