@@ -193,7 +193,7 @@ soundEffect.loop = true;
 // soundEffect.pause();
 audioCanvas.addEventListener("click", () => {
   soundEffect.play();
-  readyText.innerText = "Palms";
+  readyText.innerText = "🙌";
   //   soundEffect.play();
 });
 
@@ -561,7 +561,7 @@ function onResults(results) {
           }
         } else {
           continousHandsDetected = 0;
-          readyText.innerText = "Palms";
+          readyText.innerText = "🙌";
         }
       }
 
